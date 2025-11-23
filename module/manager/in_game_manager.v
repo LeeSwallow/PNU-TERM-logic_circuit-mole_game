@@ -28,7 +28,7 @@ reg [8:0] mole_interval; // mole interval timer
 
 // set random generator
 rand_gen rg_inst(
-    .clk(clk_1mhz),
+    .clk_1mhz(clk_1mhz),
     .rst(rst),
     .rand_num(rand_val)
 );

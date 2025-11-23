@@ -18,8 +18,8 @@ localparam integer READY_DURATION = 7'd5; // ready duration = 4 seconds beep-bee
 reg [1:0] sync_trig;
 reg [9:0] clk_cnt, mille_cnt;
 
-// synchronize trigger signal
-always @(posedge clk_1mhz or posedge rst) begin
+// synchronize trigger signal (use synchronous reset to avoid ambiguous clock event)
+always @(posedge clk_1mhz) begin
     if (rst) begin
         done <= 1'b0;
         sec_posedge <= 1'b0;
@@ -32,8 +32,9 @@ always @(posedge clk_1mhz or posedge rst) begin
         sync_trig <= 2'b00;
         clk_cnt <= 10'd0;
         mille_cnt <= 10'd0;
-        
-    end else begin
+    end
+    else begin
+        // synchronous reset: update synchronizer and rest of logic on clock
         sync_trig <= {sync_trig[0], trig};
     end
 
@@ -44,7 +45,7 @@ always @(posedge clk_1mhz or posedge rst) begin
             case (flag)
                 // increment score
                 4'b0001: begin 
-                    score <= score + 10'd10;
+                    score <= score + 10'd1;
                 end
                 
                 // decrement life
