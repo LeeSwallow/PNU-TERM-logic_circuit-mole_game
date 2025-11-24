@@ -1,0 +1,4 @@
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Univ/logic_circuit/term_project/module/manager/game_state_manager.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module gsm
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Univ/logic_circuit/term_project/testbench/tb_gsm_simple.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb_gsm_simple

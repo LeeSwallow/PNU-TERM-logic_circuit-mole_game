@@ -2,7 +2,7 @@
 2020.1
 May 27 2020
 20:09:33
-D:/Univ/logic_circuit/term_project/module/manager/game_state_manager.v,1763733638,verilog,,D:/Univ/logic_circuit/term_project/testbench/tb_gsm_simple.v,,gsm,,,,,,,,
+D:/Univ/logic_circuit/term_project/module/manager/game_state_manager.v,1763957252,verilog,,D:/Univ/logic_circuit/term_project/testbench/tb_gsm_simple.v,,gsm,,,,,,,,
 D:/Univ/logic_circuit/term_project/module/manager/in_game_manager.v,1763731863,verilog,,D:/Univ/logic_circuit/term_project/module/unit/ramdom_generator.v,,igm,,,,,,,,
 D:/Univ/logic_circuit/term_project/module/unit/ramdom_generator.v,1763726186,verilog,,D:/Univ/logic_circuit/term_project/testbench/tb_in_game_manager_simple.v,,rand_gen,,,,,,,,
 D:/Univ/logic_circuit/term_project/term_project.sim/sim_1/behav/xsim/glbl.v,1590624368,verilog,,,,glbl,,,,,,,,

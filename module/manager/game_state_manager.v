@@ -15,8 +15,14 @@ localparam integer BASE_DURATION = 10'd1000; // 1 second = 1000 ms, 1ms = 1000 c
 localparam integer PLAY_DURATION = 7'd60; // default play duration = 60 seconds
 localparam integer READY_DURATION = 7'd5; // ready duration = 4 seconds beep-beep-beep-go
 
+// Notification pulse widths (in clk_1mhz cycles). Tune these to extend notification visibility.
+localparam integer DONE_PULSE_CYCLES = 8'd10;    // keep `done` high for 10 clock cycles
+localparam integer SEC_PULSE_CYCLES  = 16'd50;   // keep `sec_posedge` high for 50 clock cycles
+
 reg [1:0] sync_trig;
 reg [9:0] clk_cnt, mille_cnt;
+reg [7:0] done_cnt;    // counter to hold `done` signal
+reg [15:0] sec_cnt;    // counter to hold `sec_posedge` signal
 
 // synchronize trigger signal (use synchronous reset to avoid ambiguous clock event)
 always @(posedge clk_1mhz) begin
@@ -32,6 +38,8 @@ always @(posedge clk_1mhz) begin
         sync_trig <= 2'b00;
         clk_cnt <= 10'd0;
         mille_cnt <= 10'd0;
+        done_cnt <= 8'd0;
+        sec_cnt <= 16'd0;
     end
     else begin
         // synchronous reset: update synchronizer and rest of logic on clock
@@ -111,12 +119,17 @@ always @(posedge clk_1mhz) begin
                     score <= 10'd0; // reset score
                 end
             endcase
+            // start done pulse timer
             done <= 1'b1;
+            done_cnt <= DONE_PULSE_CYCLES;
         end
     end
-    // generate done signal pulse
-    else if (done) begin
-        done <= 1'b0;
+    // handle done pulse length
+    else if (done_cnt > 0) begin
+        done_cnt <= done_cnt - 1;
+        if (done_cnt == 8'd1) begin
+            done <= 1'b0;
+        end
     end
 
     // timer countdown logic
@@ -131,8 +144,9 @@ always @(posedge clk_1mhz) begin
                 mille_cnt <= mille_cnt + 10'd1;
             end else begin
                 mille_cnt <= 10'd0;
-                // 1 second passed
+                // 1 second passed -> start sec_posedge pulse timer
                 sec_posedge <= 1'b1;
+                sec_cnt <= SEC_PULSE_CYCLES;
                 if (timer > 0) begin
                     timer <= timer - 7'd1;
                 end else begin
@@ -145,6 +159,13 @@ always @(posedge clk_1mhz) begin
         clk_cnt <= 10'd0;
         mille_cnt <= 10'd0;
         sec_posedge <= 1'b0;
+    end
+    // handle sec_posedge pulse length (decrement counter if active)
+    if (sec_cnt > 0) begin
+        sec_cnt <= sec_cnt - 1;
+        if (sec_cnt == 16'd1) begin
+            sec_posedge <= 1'b0;
+        end
     end
 end
 endmodule

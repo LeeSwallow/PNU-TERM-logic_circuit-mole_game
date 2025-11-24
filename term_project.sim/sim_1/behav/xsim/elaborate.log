@@ -5,4 +5,12 @@ Using 2 slave threads.
 Starting static elaboration
 Pass Through NonSizing Optimizer
 Completed static elaboration
-INFO: [XSIM 43-4323] No Change in HDL. Linking previously generated obj files to create kernel
+Starting simulation data flow analysis
+WARNING: [XSIM 43-4099] "D:/Univ/logic_circuit/term_project/module/manager/game_state_manager.v" Line 1. Module gsm doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/Univ/logic_circuit/term_project/module/manager/game_state_manager.v" Line 1. Module gsm doesn't have a timescale but at least one module in design has a timescale.
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.gsm
+Compiling module xil_defaultlib.tb_gsm_simple
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot tb_gsm_simple_behav

@@ -2,10 +2,17 @@ module gm(
     input wire clk_1mhz, input wire rst,
     input wire [10:0] btn_in, // button inputs
     output wire piezo_out, // piezo output
-    output wire [7:0] led_out // LED outputs
+    output wire [7:0] led_out, // LED outputs
+    output wire [7:0] seg_out, // 7-segment display outputs
+    output wire [7:0] seg_arr_out, // 7-segment array digit select outputs
+    output wire servo_out // servo output
 );
 
-// game state manager signals
+/*
+===============================================================================
+instantiate game state manager
+===============================================================================
+*/
 reg gsm_trig;
 reg[3:0] gsm_flag;
 wire gsm_done;
@@ -30,8 +37,11 @@ gsm gsm_inst(
     .lives(gsm_lives),
     .score(gsm_score)
 );
-
-// in-game manager signals
+/*
+===============================================================================
+instantiate in-game manager
+===============================================================================
+*/
 wire [3:0] igm_mole_pos;
 wire igm_enable;
 assign igm_enable = ((gsm_state == 3'd1) && gsm_timer_running); // enable when playing and timer running
@@ -43,7 +53,11 @@ igm igm_inst(
     .mole_pos(igm_mole_pos)
 );
 
-// instantiate sound manager
+/*
+===============================================================================
+instantiate sound manager
+===============================================================================
+*/
 wire snd_playing;
 reg snd_trig;
 reg [2:0] snd_mode;
@@ -56,7 +70,11 @@ sndm sndm_inst(
     .piezo_out(piezo_out)
 );
 
-// key button input signals
+/*
+===============================================================================
+instantiate button input module
+===============================================================================
+*/
 wire btn_pressed;
 wire [3:0] btn_value;
 key_button_input kbi_inst(
@@ -67,24 +85,64 @@ key_button_input kbi_inst(
     .button_value(btn_value)
 );
 
-reg [1:0] gsm_sync, snd_sync, btn_sync, gsm_timer_sync;
+/*
+===============================================================================
+instantiate LED output module
+===============================================================================
+*/
+leds_output leds_inst(
+    .mole_pos(igm_mole_pos),
+    .leds(led_out)
+);
+
+/*
+===============================================================================
+instantiate bin to 7-segment display module
+===============================================================================
+*/
+7seg_arr_output seg_inst(
+    .clk_1mhz(clk_1mhz),
+    .rst(rst),
+    .lives(gsm_lives), // extend to 4 bits
+    .score(gsm_score),
+    .seg_out(seg_out),
+    .array_out(seg_arr_out)
+);
+
+/*
+===============================================================================
+instanciate servo output module
+===============================================================================
+*/
+
+servo_output servo_inst(
+    .clk_1mhz(clk_1mhz),
+    .rst(rst),
+    .enable(igm_enable), // enable when playing
+    .timer(gsm_timer),
+    .servo_out(servo_out)
+);
+
+/*
+===============================================================================
+implement game main FSM
+===============================================================================
+*/
+reg [1:0] snd_sync, btn_sync, gsm_timer_sync;
 reg ready_btn_clicked;
 
-// main game logic
-always @(posedge clk_1mhz) begin
+always @(posedge clk_1mhz or posedge rst) begin
     if (rst) begin
         gsm_trig <= 1'b0;
         gsm_flag <= 4'd0;
         snd_trig <= 1'b0;
         snd_mode <= 3'd0;
-        gsm_sync <= 2'd0;
         snd_sync <= 2'd0;
         btn_sync <= 2'd0;
         gsm_timer_sync <= 2'd0;
         ready_btn_clicked <= 1'b0;
     end else begin
         // synchronize signals
-        gsm_sync <= {gsm_sync[0], gsm_done};
         gsm_timer_sync <= {gsm_timer_sync[0], gsm_timer_running};
         snd_sync <= {snd_sync[0], snd_playing};
         btn_sync <= {btn_sync[0], btn_pressed};
@@ -101,18 +159,17 @@ always @(posedge clk_1mhz) begin
             end 
 
             if (ready_btn_clicked) begin
-                if (gsm_sec_posedge) begin // every second
+                if (gsm_sec_posedge && !snd_playing) begin // every second, only if sound idle
                     if (gsm_timer == 7'd1) begin
-                        snd_mode <= 3'b010; // start beep
+                        snd_mode <= 3'b010; // start beep (last second)
                         snd_trig <= 1'b1;
                     end else begin
-                        snd_mode <= 3'b010; // no sound
+                        snd_mode <= 3'b001; // normal countdown beep
                         snd_trig <= 1'b1;
                     end
                 end
-                
                 if (gsm_timer_sync == 2'b10) begin // timer stopped by zero(negative edge)
-                    gsm_flag <= 4'b1000; // to ready
+                    gsm_flag <= 4'b1010; // to playing
                     gsm_trig <= 1'b1;
                 end
             end
@@ -133,12 +190,12 @@ always @(posedge clk_1mhz) begin
                     if (igm_mole_pos == btn_value) begin // hit
                         gsm_flag <= 4'b0001; // increment score
                         gsm_trig <= 1'b1;
-                        snd_mode <= 3'b001; // hit sound
+                        snd_mode <= 3'b011; // hit sound
                         snd_trig <= 1'b1;
                     end else begin // miss
                         gsm_flag <= 4'b0010; // decrement life
                         gsm_trig <= 1'b1;
-                        snd_mode <= 3'b011; // miss sound
+                        snd_mode <= 3'b100; // miss sound
                         snd_trig <= 1'b1;
                     end
                 end
@@ -147,7 +204,7 @@ always @(posedge clk_1mhz) begin
                 if (gsm_stage < 2'd3) begin
                     gsm_flag <= 4'b1100; // to stage clear
                 end else begin
-                    gsm_flag <= 4'b1110; // to game over
+                    gsm_flag <= 4'b1110; // to game clear
                 end
                 gsm_trig <= 1'b1;
             end
@@ -200,3 +257,6 @@ always @(posedge clk_1mhz) begin
     end
 end
 endmodule
+/*
+===============================================================================
+*/
