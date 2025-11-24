@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2020.1 (64-bit)
+# SW Build 2902540 on Wed May 27 19:54:49 MDT 2020
+# IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
+# Start of session at: Mon Nov 24 15:32:03 2025
+# Process ID: 9084
+# Current directory: D:/Univ/logic_circuit/term_project/term_project.runs/impl_1
+# Command line: vivado.exe -log gm.vdi -applog -product Vivado -messageDb vivado.pb -mode batch -source gm.tcl -notrace
+# Log file: D:/Univ/logic_circuit/term_project/term_project.runs/impl_1/gm.vdi
+# Journal file: D:/Univ/logic_circuit/term_project/term_project.runs/impl_1\vivado.jou
+#-----------------------------------------------------------
+source gm.tcl -notrace
