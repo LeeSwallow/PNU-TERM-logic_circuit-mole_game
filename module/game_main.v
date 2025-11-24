@@ -128,7 +128,7 @@ servo_output servo_inst(
 implement game main FSM
 ===============================================================================
 */
-reg [1:0] snd_sync, btn_sync, gsm_timer_sync;
+reg [1:0] snd_sync, btn_sync, gsm_timer_sync, gsm_sec_sync;
 reg ready_btn_clicked;
 
 always @(posedge clk_1mhz or posedge rst) begin
@@ -140,12 +140,14 @@ always @(posedge clk_1mhz or posedge rst) begin
         snd_sync <= 2'd0;
         btn_sync <= 2'd0;
         gsm_timer_sync <= 2'd0;
+        gsm_sec_sync <= 2'd0;
         ready_btn_clicked <= 1'b0;
     end else begin
         // synchronize signals
         gsm_timer_sync <= {gsm_timer_sync[0], gsm_timer_running};
         snd_sync <= {snd_sync[0], snd_playing};
         btn_sync <= {btn_sync[0], btn_pressed};
+        gsm_sec_sync <= {gsm_sec_sync[0], gsm_sec_posedge};
         
         // ready state
         if (gsm_state == 3'b000) begin
@@ -159,8 +161,8 @@ always @(posedge clk_1mhz or posedge rst) begin
             end 
 
             if (ready_btn_clicked) begin
-                if (gsm_sec_posedge && !snd_playing) begin // every second, only if sound idle
-                    if (gsm_timer == 7'd1) begin
+                if (gsm_sec_sync == 2'b01 && !snd_playing) begin // every second, only if sound idle
+                    if (gsm_timer == 7'd0) begin
                         snd_mode <= 3'b010; // start beep (last second)
                         snd_trig <= 1'b1;
                     end else begin
@@ -181,32 +183,36 @@ always @(posedge clk_1mhz or posedge rst) begin
             snd_trig <= 1'b0;
             ready_btn_clicked <= 1'b0;
             
-            if (gsm_lives == 2'd0) begin
-                gsm_flag <= 4'b1101; // to game over
-                gsm_trig <= 1'b1;
-            end
-            if (btn_sync == 2'b01) begin // button pressed(1~8)
-                if ((btn_value >= 4'd1) && (btn_value <= 4'd8)) begin
-                    if (igm_mole_pos == btn_value) begin // hit
-                        gsm_flag <= 4'b0001; // increment score
-                        gsm_trig <= 1'b1;
-                        snd_mode <= 3'b011; // hit sound
-                        snd_trig <= 1'b1;
-                    end else begin // miss
-                        gsm_flag <= 4'b0010; // decrement life
-                        gsm_trig <= 1'b1;
-                        snd_mode <= 3'b100; // miss sound
-                        snd_trig <= 1'b1;
+            if (gsm_lives != 2'd0) begin
+                if (btn_sync == 2'b01) begin // button pressed(1~8)
+                    if ((btn_value >= 4'd1) && (btn_value <= 4'd8)) begin
+                        if (igm_mole_pos == btn_value) begin // hit
+                            gsm_flag <= 4'b0001; // increment score
+                            gsm_trig <= 1'b1;
+                            snd_mode <= 3'b011; // hit sound
+                            snd_trig <= 1'b1;
+                        end else begin // miss
+                            gsm_flag <= 4'b0010; // decrement life
+                            gsm_trig <= 1'b1;
+                            snd_mode <= 3'b100; // miss sound
+                            snd_trig <= 1'b1;
+                        end
                     end
                 end
-            end
-            if (gsm_timer_sync == 2'b10) begin // timer stopped by zero(negative edge)
-                if (gsm_stage < 2'd3) begin
-                    gsm_flag <= 4'b1100; // to stage clear
-                end else begin
-                    gsm_flag <= 4'b1110; // to game clear
+                if (gsm_timer_sync == 2'b10) begin // timer stopped by zero(negative edge)
+                    if (gsm_stage < 2'd3) begin
+                        gsm_flag <= 4'b1100; // to stage clear
+                    end else begin
+                        gsm_flag <= 4'b1110; // to game clear
+                    end
+                    gsm_trig <= 1'b1;
                 end
-                gsm_trig <= 1'b1;
+            end else begin
+                // no lives left -> game over
+                if (!gsm_done) begin
+                    gsm_flag <= 4'b1101; // to game over
+                    gsm_trig <= 1'b1;
+                end
             end
         end
 

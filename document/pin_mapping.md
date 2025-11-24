@@ -85,3 +85,27 @@
 | timer[1] | W1 | DIP_SW6 | Timer bit 1 (DIP switch 6) |
 | timer[0] | V4 | DIP_SW7 | Timer bit 0 (DIP switch 7) |
 | servo_out | AA22 | SERVO_CTRL | Servo motor PWM output |
+
+
+### Test text_lcd_output pin mapping
+| IO | pinMap | COMBO II-DLD BASE | Description |
+|----|--------|---------------------|----------------|
+| clk_1mhz | M8 | FPGA_CLK4 | 1MHz clock input |
+| rst | k6 | KEY12 | `#` btn (reset) |
+| lcd_data[7] | D1 | LCD_D7 | LCD data bit 0 |
+| lcd_data[6] | C1 | LCD_D6 | LCD data bit 1 |
+| lcd_data[5] | C5 | LCD_D5 | LCD data bit 2  |
+| lcd_data[4] | A2 | LCD_D4 | LCD data bit 3  |
+| lcd_data[3] | D4 | LCD_D3 | LCD data bit 4  |
+| lcd_data[2] | C3 | LCD_D2 | LCD data bit 5  |
+| lcd_data[1] | B2 | LCD_D1 | LCD data bit 6  |
+| lcd_data[0] | A4 | LCD_D0 | LCD data bit 7  |
+| lcd_rs | G6 | LCD_RS | LCD register select |
+| lcd_rw | D6 | LCD_RW | LCD read/write select |
+| lcd_en | A6 | LCD_EN | LCD enable signal |
+| state[3] | Y1 | DIP_SW1 | State bit 3 (DIP switch 1) |
+| state[2] | W3 | DIP_SW2 | State bit 2 (DIP switch 2) |
+| state[1] | U2 | DIP_SW3 | State bit 1 (DIP switch 3) |
+| state[0] | T1 | DIP_SW4 | State bit 0 (DIP switch 4) |
+| stage[1] | W4 | DIP_SW5 | Game stage bit 1 (DIP switch 5) |
+| stage[0] | W1 | DIP_SW6 | Game stage bit 0 (DIP switch 6) |

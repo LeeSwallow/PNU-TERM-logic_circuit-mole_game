@@ -12,12 +12,12 @@ module gsm(
     output reg [9:0] score // current score
 );
 localparam integer BASE_DURATION = 10'd1000; // 1 second = 1000 ms, 1ms = 1000 clk_1mhz cycles
-localparam integer PLAY_DURATION = 7'd60; // default play duration = 60 seconds
-localparam integer READY_DURATION = 7'd5; // ready duration = 4 seconds beep-beep-beep-go
+localparam integer PLAY_DURATION = 7'd30; // default play duration = 60 seconds
+localparam integer READY_DURATION = 7'd3; // ready duration = 4 seconds beep-beep-beep-go
 
 // Notification pulse widths (in clk_1mhz cycles). Tune these to extend notification visibility.
-localparam integer DONE_PULSE_CYCLES = 8'd10;    // keep `done` high for 10 clock cycles
-localparam integer SEC_PULSE_CYCLES  = 16'd50;   // keep `sec_posedge` high for 50 clock cycles
+localparam integer DONE_PULSE_CYCLES = 8'd1;    // keep `done` high for 10 clock cycles
+localparam integer SEC_PULSE_CYCLES  = 16'd1;   // keep `sec_posedge` high for 50 clock cycles
 
 reg [1:0] sync_trig;
 reg [9:0] clk_cnt, mille_cnt;
@@ -78,40 +78,44 @@ always @(posedge clk_1mhz) begin
                     // reset game parameters
                     timer <= READY_DURATION;
                     timer_running <= 1'b0; // start on btn pressed
+                    
+                    // Reset only if NOT coming from Stage Clear (3'b100)
+                    if (state != 3'b100) begin
+                        stage <= 2'd1; // reset stage
+                        lives <= 2'd3; // reset lives
+                        score <= 10'd0; // reset score
+                    end
                 end
                 
                 // to playing(from ready)
                 4'b1010: begin 
-                    state <= 3'd1;
+                    state <= 3'b001;
                     timer <= PLAY_DURATION;
                     timer_running <= 1'b1;
                 end
 
                 // to stage clear(from playing)
                 4'b1100: begin
-                    state <= 3'd4;
+                    state <= 3'b100;
                     stage <= stage + 2'd1;
                     timer_running <= 1'b0;
                 end
                
                 4'b1101: begin 
                     // to game over(from playing)
-                    state <= 3'd3;
-                    stage <= 2'd1; // reset stage
-                    lives <= 2'd3; // reset lives
-                    score <= 10'd0; // reset score
+                    state <= 3'b011;
                     timer_running <= 1'b0;
                 end
                
                 4'b1110: begin 
                     // to game clear(from playing)
-                    state <= 3'd5;
+                    state <= 3'b101;
                     timer_running <= 1'b0;
                 end
 
                 4'b1111: begin 
                     // reset to ready(from stage clear)
-                    state <= 3'd0;
+                    state <= 3'b000;
                     timer <= READY_DURATION;
                     timer_running <= 1'b0;
                     stage <= 2'd1; // reset stage

@@ -129,6 +129,16 @@ state 정의:
 계산식: pulse = MIN + (MAX-MIN)*timer/60.
 
 ---
+### 11. text_lcd_output
+역할: HD44780 호환 16x2 문자 LCD에 게임 상태 텍스트 출력. state/stage/lives/score/timer 또는 매초(sec_posedge) 변화 시 두 줄을 재작성.
+라인 포맷(각 16문자):
+- Line1: STATE(5) + 공백 + "ST" + stage + 공백 + "T" + 남은 타이머 2자리 + 공백 패딩
+- Line2: "L" + lives + 공백 + "S" + score 4자리(0 패딩) + 나머지 공백
+상태 단축표기: READY, PLAY , GOVER, SCLR , GCLR (길이 5로 맞춤). 점수는 최대 9999로 클램프.
+초기화 시퀀스(기본 8비트 / 2라인 / 표시 ON / Clear / Entry 모드) 후 버퍼를 순차 문자 쓰기.
+EN 펄스와 명령 지연을 내부 us 단위 카운터(1MHz)로 단순 처리. RW=0만 사용(바쁜 플래그 미폴링).
+
+---
 ### 상호 작용 흐름 요약
 1. 전원/리셋 후 ready: `gsm` 카운트다운 대기, START 버튼(10) 입력 시 resume → 카운트다운 음향 재생(`sndm`).
 2. 카운트다운 종료 → playing: `igm` 난수 기반 몰 등장, 사용자는 버튼(1~8)으로 타격 시도.
