@@ -1,8 +1,9 @@
 // 8-digit 7-segment array output driver
-// Displays lives (one digit) and score (up to 3 digits) right-aligned.
-// Remaining digits blank.
+// Layout updated: use 4-digit block for score (left side), 4-digit block for lives (right side).
+// Score shown in thousands,hundreds,tens,ones with leading zero blanking.
+// Lives (2-bit) shown in ones place of right block; its upper 3 digits always blank.
 // Base clock: 1MHz. Simple time-multiplexing.
-module 7seg_arr_output(
+module seg_arr_output(
     input  wire       clk_1mhz,
     input  wire       rst,
     input  wire [1:0] lives,     // 0~3 (2-bit), will be zero-extended internally
@@ -33,31 +34,42 @@ module 7seg_arr_output(
         end
     end
 
-    // Score digit extraction
-    wire [9:0] score_clamped = (score > 10'd999) ? 10'd999 : score;
-    wire [3:0] hundreds = score_clamped / 10'd100;
-    wire [3:0] tens     = (score_clamped / 10'd10) % 10;
-    wire [3:0] ones     = score_clamped % 10'd10;
+    // Score digit extraction (extend to 4 digits block)
+    // Clamp score to 0~9999 (input is 10 bits so actual max 1023)
+    wire [13:0] score_clamped = (score > 14'd9999) ? 14'd9999 : score;
+    wire [3:0] thousands = score_clamped / 14'd1000;
+    wire [3:0] hundreds  = (score_clamped / 14'd100) % 10;
+    wire [3:0] tens      = (score_clamped / 14'd10) % 10;
+    wire [3:0] ones      = score_clamped % 14'd10;
 
-    // Leading zero blanking flags
-    wire blank_hundreds = (hundreds == 4'd0);
-    wire blank_tens     = (hundreds == 4'd0) && (tens == 4'd0);
+    // Leading zero blanking flags for score block
+    wire blank_thousands = (thousands == 4'd0);
+    wire blank_hundreds  = blank_thousands && (hundreds == 4'd0);
+    wire blank_tens      = blank_hundreds && (tens == 4'd0);
 
     // Digit mapping (scan_idx -> value)
-    // Choose layout: [7]=Lives, [6]=Blank, [5]=Hundreds, [4]=Tens, [3]=Ones, [2]=Blank, [1]=Blank, [0]=Blank
+    // New swapped layout (scan_idx 7→0):
+    // [7] score thousands (blank if leading zero)
+    // [6] score hundreds  (blank if leading zero)
+    // [5] score tens      (blank if leading zero)
+    // [4] score ones
+    // [3] lives thousands (blank)
+    // [2] lives hundreds  (blank)
+    // [1] lives tens      (blank)
+    // [0] lives ones (lives_ext)
     reg [3:0] digit_val;
     reg       digit_blank;
     always @(*) begin
         digit_blank = 1'b0;
         case (scan_idx)
-            3'd7: digit_val = lives_ext; // lives leftmost (extended)
-            3'd6: begin digit_val = 4'h0; digit_blank = 1'b1; end
-            3'd5: begin digit_val = hundreds; digit_blank = blank_hundreds; end
-            3'd4: begin digit_val = tens;     digit_blank = blank_tens;     end
-            3'd3: digit_val = ones;
-            3'd2: begin digit_val = 4'h0; digit_blank = 1'b1; end
-            3'd1: begin digit_val = 4'h0; digit_blank = 1'b1; end
-            3'd0: begin digit_val = 4'h0; digit_blank = 1'b1; end
+            3'd7: begin digit_val = thousands; digit_blank = blank_thousands; end // score thousands
+            3'd6: begin digit_val = hundreds;  digit_blank = blank_hundreds;  end // score hundreds
+            3'd5: begin digit_val = tens;      digit_blank = blank_tens;      end // score tens
+            3'd4: digit_val = ones;                                           // score ones
+            3'd3: begin digit_val = 4'h0; digit_blank = 1'b1; end             // lives thousands (blank)
+            3'd2: begin digit_val = 4'h0; digit_blank = 1'b1; end             // lives hundreds (blank)
+            3'd1: begin digit_val = 4'h0; digit_blank = 1'b1; end             // lives tens (blank)
+            3'd0: digit_val = lives_ext;                                      // lives ones
             default: begin digit_val = 4'h0; digit_blank = 1'b1; end
         endcase
     end

@@ -100,7 +100,7 @@ leds_output leds_inst(
 instantiate bin to 7-segment display module
 ===============================================================================
 */
-7seg_arr_output seg_inst(
+seg_arr_output seg_inst(
     .clk_1mhz(clk_1mhz),
     .rst(rst),
     .lives(gsm_lives), // extend to 4 bits
