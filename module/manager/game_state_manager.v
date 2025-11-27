@@ -13,7 +13,7 @@ module gsm(
 );
 localparam integer BASE_DURATION = 10'd1000; // 1 second = 1000 ms, 1ms = 1000 clk_1mhz cycles
 localparam integer PLAY_DURATION = 7'd30; // default play duration = 60 seconds
-localparam integer READY_DURATION = 7'd3; // ready duration = 4 seconds beep-beep-beep-go
+localparam integer READY_DURATION = 7'd4; // ready duration = 4 seconds beep-beep-beep-go
 
 // Notification pulse widths (in clk_1mhz cycles). Tune these to extend notification visibility.
 // Removed pulse cycles as we use single cycle pulses now
@@ -134,12 +134,10 @@ always @(posedge clk_1mhz) begin
                     mille_cnt <= mille_cnt + 10'd1;
                 end else begin
                     mille_cnt <= 10'd0;
-                    // 1 second passed -> pulse sec_posedge
-                    sec_posedge <= 1'b1;
                     if (timer > 0) begin
                         timer <= timer - 7'd1;
+                        sec_posedge <= 1'b1;
                     end else begin
-                        // stop timer at 0
                         timer_running <= 1'b0; 
                     end
                 end
