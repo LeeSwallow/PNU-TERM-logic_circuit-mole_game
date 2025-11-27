@@ -49,8 +49,9 @@ flag 정의(동작/상태 전환):
 - 1111: stage clear 후 완전 리셋 ready
 
 state 정의:
-- 000: ready
-- 001: playing
+- 000: reset
+- 001: ready
+- 010: playing
 - 011: game over
 - 100: stage clear
 - 101: game clear

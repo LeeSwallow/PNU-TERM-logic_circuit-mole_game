@@ -1,7 +1,7 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -----------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-| Date         : Mon Nov 24 19:52:57 2025
+| Date         : Mon Nov 24 20:36:47 2025
 | Host         : Swallow-Laptop running 64-bit major release  (build 9200)
 | Command      : report_utilization -file gm_utilization_synth.rpt -pb gm_utilization_synth.pb
 | Design       : gm
@@ -30,11 +30,11 @@ Table of Contents
 +-------------------------+------+-------+-----------+-------+
 |        Site Type        | Used | Fixed | Available | Util% |
 +-------------------------+------+-------+-----------+-------+
-| Slice LUTs*             |  501 |     0 |     48000 |  1.04 |
-|   LUT as Logic          |  501 |     0 |     48000 |  1.04 |
+| Slice LUTs*             |  577 |     0 |     48000 |  1.20 |
+|   LUT as Logic          |  577 |     0 |     48000 |  1.20 |
 |   LUT as Memory         |    0 |     0 |     17600 |  0.00 |
-| Slice Registers         |  214 |     0 |     96000 |  0.22 |
-|   Register as Flip Flop |  214 |     0 |     96000 |  0.22 |
+| Slice Registers         |  276 |     0 |     96000 |  0.29 |
+|   Register as Flip Flop |  276 |     0 |     96000 |  0.29 |
 |   Register as Latch     |    0 |     0 |     96000 |  0.00 |
 | F7 Muxes                |    1 |     0 |     32000 | <0.01 |
 | F8 Muxes                |    0 |     0 |     16000 |  0.00 |
@@ -54,10 +54,10 @@ Table of Contents
 | 0     |            _ |         Set |            - |
 | 0     |            _ |       Reset |            - |
 | 0     |          Yes |           - |            - |
-| 8     |          Yes |           - |          Set |
-| 135   |          Yes |           - |        Reset |
+| 12    |          Yes |           - |          Set |
+| 159   |          Yes |           - |        Reset |
 | 1     |          Yes |         Set |            - |
-| 70    |          Yes |       Reset |            - |
+| 104   |          Yes |       Reset |            - |
 +-------+--------------+-------------+--------------+
 
 
@@ -91,7 +91,7 @@ Table of Contents
 +-----------------------------+------+-------+-----------+-------+
 |          Site Type          | Used | Fixed | Available | Util% |
 +-----------------------------+------+-------+-----------+-------+
-| Bonded IOB                  |   39 |     0 |       338 | 11.54 |
+| Bonded IOB                  |   62 |     0 |       338 | 18.34 |
 | Bonded IPADs                |    0 |     0 |         2 |  0.00 |
 | PHY_CONTROL                 |    0 |     0 |         8 |  0.00 |
 | PHASER_REF                  |    0 |     0 |         8 |  0.00 |
@@ -146,18 +146,18 @@ Table of Contents
 +----------+------+---------------------+
 | Ref Name | Used | Functional Category |
 +----------+------+---------------------+
-| LUT6     |  184 |                 LUT |
-| FDCE     |  135 |        Flop & Latch |
-| LUT5     |  130 |                 LUT |
-| LUT2     |  116 |                 LUT |
-| LUT4     |  101 |                 LUT |
-| LUT3     |   78 |                 LUT |
-| FDRE     |   70 |        Flop & Latch |
+| LUT6     |  230 |                 LUT |
+| FDCE     |  159 |        Flop & Latch |
+| LUT5     |  139 |                 LUT |
+| LUT2     |  124 |                 LUT |
+| LUT4     |  109 |                 LUT |
+| FDRE     |  104 |        Flop & Latch |
+| LUT3     |  100 |                 LUT |
 | CARRY4   |   61 |          CarryLogic |
-| OBUF     |   26 |                  IO |
+| OBUF     |   49 |                  IO |
 | LUT1     |   26 |                 LUT |
 | IBUF     |   13 |                  IO |
-| FDPE     |    8 |        Flop & Latch |
+| FDPE     |   12 |        Flop & Latch |
 | MUXF7    |    1 |               MuxFx |
 | FDSE     |    1 |        Flop & Latch |
 | DSP48E1  |    1 |    Block Arithmetic |

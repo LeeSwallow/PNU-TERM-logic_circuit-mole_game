@@ -5,7 +5,14 @@ module gm(
     output wire [7:0] led_out, // LED outputs
     output wire [7:0] seg_out, // 7-segment display outputs
     output wire [7:0] seg_arr_out, // 7-segment array digit select outputs
-    output wire servo_out // servo output
+    output wire servo_out, // servo output,
+    output wire [3:0] led_red_out,
+    output wire [3:0] led_green_out,
+    output wire [3:0] led_blue_out,
+    output wire [7:0] lcd_data,
+    output wire lcd_rs,
+    output wire lcd_rw,
+    output wire lcd_en
 );
 
 /*
@@ -125,6 +132,41 @@ servo_output servo_inst(
 
 /*
 ===============================================================================
+instanciate rgb led output module
+===============================================================================
+*/
+rgb_led_output rgb_led_inst(
+    .clk(clk_1mhz),
+    .rst(rst),
+    .state(gsm_state),
+    .led_red(led_red_out),
+    .led_green(led_green_out),
+    .led_blue(led_blue_out)
+);
+
+/*
+===============================================================================
+instantiate text LCD output module
+*/
+
+text_lcd_output lcd_inst(
+    .clk_1mhz(clk_1mhz),
+    .rst(rst),
+    .state(gsm_state),
+    .stage(gsm_stage),
+    .lcd_rs(lcd_rs),
+    .lcd_rw(lcd_rw),
+    .lcd_en(lcd_en),
+    .lcd_data(lcd_data)
+);
+
+
+/*
+===============================================================================
+*/
+
+/*
+===============================================================================
 implement game main FSM
 ===============================================================================
 */
@@ -150,7 +192,7 @@ always @(posedge clk_1mhz or posedge rst) begin
         gsm_sec_sync <= {gsm_sec_sync[0], gsm_sec_posedge};
         
         // ready state
-        if (gsm_state == 3'b000) begin
+        if (gsm_state == 3'b001) begin
             gsm_trig <= 1'b0;
             snd_trig <= 1'b0;
 
@@ -178,7 +220,7 @@ always @(posedge clk_1mhz or posedge rst) begin
         end
         
         // playing state    
-        else if (gsm_state == 3'b001) begin
+        else if (gsm_state == 3'b010) begin
             gsm_trig <= 1'b0;
             snd_trig <= 1'b0;
             ready_btn_clicked <= 1'b0;

@@ -16,39 +16,35 @@ localparam integer PLAY_DURATION = 7'd30; // default play duration = 60 seconds
 localparam integer READY_DURATION = 7'd3; // ready duration = 4 seconds beep-beep-beep-go
 
 // Notification pulse widths (in clk_1mhz cycles). Tune these to extend notification visibility.
-localparam integer DONE_PULSE_CYCLES = 8'd1;    // keep `done` high for 10 clock cycles
-localparam integer SEC_PULSE_CYCLES  = 16'd1;   // keep `sec_posedge` high for 50 clock cycles
+// Removed pulse cycles as we use single cycle pulses now
 
 reg [1:0] sync_trig;
 reg [9:0] clk_cnt, mille_cnt;
-reg [7:0] done_cnt;    // counter to hold `done` signal
-reg [15:0] sec_cnt;    // counter to hold `sec_posedge` signal
 
 // synchronize trigger signal (use synchronous reset to avoid ambiguous clock event)
 always @(posedge clk_1mhz) begin
-    if (rst) begin
+    if (rst || state == 3'b000) begin
         done <= 1'b0;
         sec_posedge <= 1'b0;
         timer_running <= 1'b0;
         timer <= 7'd0;
-        state <= 3'd0; // ready
+        state <= 3'b001; // ready
         stage <= 2'd1; // stage 1
         lives <= 2'd3; // 3 lives
         score <= 10'd0; // 0 score
         sync_trig <= 2'b00;
         clk_cnt <= 10'd0;
         mille_cnt <= 10'd0;
-        done_cnt <= 8'd0;
-        sec_cnt <= 16'd0;
     end
     else begin
+        // Default values for pulses
+        done <= 1'b0;
+        sec_posedge <= 1'b0;
+        
         // synchronous reset: update synchronizer and rest of logic on clock
         sync_trig <= {sync_trig[0], trig};
-    end
-
-    // triggered state change
-    if (sync_trig[0] & ~sync_trig[1]) begin
-        if (!done) begin
+        // triggered state change
+        if (sync_trig[0] & ~sync_trig[1]) begin
             // state change logic
             case (flag)
                 // increment score
@@ -74,7 +70,7 @@ always @(posedge clk_1mhz) begin
                 
                 // to ready
                 4'b1000: begin 
-                    state <= 3'd0;
+                    state <= 3'b001; // ready
                     // reset game parameters
                     timer <= READY_DURATION;
                     timer_running <= 1'b0; // start on btn pressed
@@ -89,7 +85,7 @@ always @(posedge clk_1mhz) begin
                 
                 // to playing(from ready)
                 4'b1010: begin 
-                    state <= 3'b001;
+                    state <= 3'b010; // playing
                     timer <= PLAY_DURATION;
                     timer_running <= 1'b1;
                 end
@@ -100,13 +96,13 @@ always @(posedge clk_1mhz) begin
                     stage <= stage + 2'd1;
                     timer_running <= 1'b0;
                 end
-               
+            
                 4'b1101: begin 
                     // to game over(from playing)
                     state <= 3'b011;
                     timer_running <= 1'b0;
                 end
-               
+            
                 4'b1110: begin 
                     // to game clear(from playing)
                     state <= 3'b101;
@@ -115,7 +111,7 @@ always @(posedge clk_1mhz) begin
 
                 4'b1111: begin 
                     // reset to ready(from stage clear)
-                    state <= 3'b000;
+                    state <= 3'b001; // ready
                     timer <= READY_DURATION;
                     timer_running <= 1'b0;
                     stage <= 2'd1; // reset stage
@@ -123,52 +119,34 @@ always @(posedge clk_1mhz) begin
                     score <= 10'd0; // reset score
                 end
             endcase
-            // start done pulse timer
+            // pulse done signal
             done <= 1'b1;
-            done_cnt <= DONE_PULSE_CYCLES;
         end
-    end
-    // handle done pulse length
-    else if (done_cnt > 0) begin
-        done_cnt <= done_cnt - 1;
-        if (done_cnt == 8'd1) begin
-            done <= 1'b0;
-        end
-    end
 
-    // timer countdown logic
-    if (timer_running) begin
-        if (clk_cnt < BASE_DURATION - 1) begin
-            clk_cnt <= clk_cnt + 10'd1;
-            sec_posedge <= 1'b0;
-        end else begin
-            clk_cnt <= 10'd0;
-            // 1 ms passed
-            if (mille_cnt < 10'd999) begin
-                mille_cnt <= mille_cnt + 10'd1;
+        // timer countdown logic
+        if (timer_running) begin
+            if (clk_cnt < BASE_DURATION - 1) begin
+                clk_cnt <= clk_cnt + 10'd1;
             end else begin
-                mille_cnt <= 10'd0;
-                // 1 second passed -> start sec_posedge pulse timer
-                sec_posedge <= 1'b1;
-                sec_cnt <= SEC_PULSE_CYCLES;
-                if (timer > 0) begin
-                    timer <= timer - 7'd1;
+                clk_cnt <= 10'd0;
+                // 1 ms passed
+                if (mille_cnt < 10'd999) begin
+                    mille_cnt <= mille_cnt + 10'd1;
                 end else begin
-                    // stop timer at 0
-                    timer_running <= 1'b0; 
+                    mille_cnt <= 10'd0;
+                    // 1 second passed -> pulse sec_posedge
+                    sec_posedge <= 1'b1;
+                    if (timer > 0) begin
+                        timer <= timer - 7'd1;
+                    end else begin
+                        // stop timer at 0
+                        timer_running <= 1'b0; 
+                    end
                 end
             end
-        end
-    end else begin
-        clk_cnt <= 10'd0;
-        mille_cnt <= 10'd0;
-        sec_posedge <= 1'b0;
-    end
-    // handle sec_posedge pulse length (decrement counter if active)
-    if (sec_cnt > 0) begin
-        sec_cnt <= sec_cnt - 1;
-        if (sec_cnt == 16'd1) begin
-            sec_posedge <= 1'b0;
+        end else begin
+            clk_cnt <= 10'd0;
+            mille_cnt <= 10'd0;
         end
     end
 end

@@ -41,6 +41,29 @@
 | seg_out[2] | E2 | AR_SEG_C | 7-seg array segment c |
 | seg_out[1] | F5 | AR_SEG_B | 7-seg array segment b |
 | seg_out[0] | F1 | AR_SEG_A | 7-seg array segment a |
+| led_red_out[3] | T2 | LEDR_R4 | Red LED bit 4 |
+| led_red_out[2] | U1 | LEDR_R3 | Red LED bit 3 |
+| led_red_out[1] | P2 | LEDR_R2 | Red LED bit 2 |
+| led_red_out[0] | R3 | LEDR_R1 | Red LED bit 1 |
+| led_green_out[3] | U5 | LEDR_G4 | Green LED bit 4 |
+| led_green_out[2] | V1 | LEDR_G3 | Green LED bit 3 |
+| led_green_out[1] | R7 | LEDR_G2 | Green LED bit 2 |
+| led_green_out[0] | T6 | LEDR_G1 | Green LED bit 1 |
+| led_blue_out[3] | U3 | LEDR_B4 | Blue LED bit 4 |
+| led_blue_out[2] | W2 | LEDR_B3 | Blue LED bit 3 |
+| led_blue_out[1] | R5 | LEDR_B2 | Blue LED bit 2 |
+| led_blue_out[0] | T3 | LEDR_B1 | Blue LED bit 1 |
+| lcd_data[7] | D1 | LCD_D7 | LCD data bit 0 |
+| lcd_data[6] | C1 | LCD_D6 | LCD data bit 1 |
+| lcd_data[5] | C5 | LCD_D5 | LCD data bit 2  |
+| lcd_data[4] | A2 | LCD_D4 | LCD data bit 3  |
+| lcd_data[3] | D4 | LCD_D3 | LCD data bit 4  |
+| lcd_data[2] | C3 | LCD_D2 | LCD data bit 5  |
+| lcd_data[1] | B2 | LCD_D1 | LCD data bit 6  |
+| lcd_data[0] | A4 | LCD_D0 | LCD data bit 7  |
+| lcd_rs | G6 | LCD_RS | LCD register select |
+| lcd_rw | D6 | LCD_RW | LCD read/write select |
+| lcd_en | A6 | LCD_EN | LCD enable signal |
 ---
 
 ### Test in_game_manager pin mapping

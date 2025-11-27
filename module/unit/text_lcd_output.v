@@ -1,13 +1,3 @@
-// Simple HD44780-compatible 16x2 text LCD output module
-// Updates text when game state or stage changes.
-// Clock: 1 MHz (1us per cycle)
-// Interface: lcd_rs, lcd_rw, lcd_en, lcd_data[7:0]
-// Assumptions: RW always 0 (write only), no busy flag read, timing satisfied by delays.
-// Lines format (16 chars each):
-// Line1: <STATE_TEXT> (Full 16 chars, e.g. "PLAY            ")
-// Line2: "Stage <N>       " (or empty if Game Over/Clear)
-// States encoded: 0 READY, 1 PLAY , 3 G_OVER, 4 S_CLR, 5 G_CLR
-
 module text_lcd_output (
     input  wire        clk_1mhz,
     input  wire        rst,

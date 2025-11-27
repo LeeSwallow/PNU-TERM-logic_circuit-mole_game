@@ -97,8 +97,10 @@ read_verilog -library xil_defaultlib {
   D:/Univ/logic_circuit/term_project/module/unit/leds_output.v
   D:/Univ/logic_circuit/term_project/module/unit/peizo_output.v
   D:/Univ/logic_circuit/term_project/module/unit/ramdom_generator.v
+  D:/Univ/logic_circuit/term_project/module/unit/rgb_led_output.v
   D:/Univ/logic_circuit/term_project/module/unit/servo_output.v
   D:/Univ/logic_circuit/term_project/module/manager/sound_manager.v
+  D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v
   D:/Univ/logic_circuit/term_project/module/game_main.v
 }
 OPTRACE "Adding files" END { }
