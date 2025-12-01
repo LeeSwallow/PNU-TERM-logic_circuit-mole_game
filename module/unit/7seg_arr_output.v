@@ -6,8 +6,7 @@
 module seg_arr_output(
     input  wire       clk_1mhz,
     input  wire       rst,
-    input  wire       is_timer_running,
-    input  wire [6:0] timer,     // 0~60s
+    input  wire [6:0] base_score,// 0~10
     input  wire [9:0] score,     // 0~999
     output reg  [7:0] seg_out,   // segment pattern (a b c d e f g dp)
     output reg  [7:0] array_out  // digit select (one-hot, active LOW by default)
@@ -45,20 +44,18 @@ module seg_arr_output(
     wire blank_hundreds  = blank_thousands && (hundreds == 4'd0);
     wire blank_tens      = blank_hundreds && (tens == 4'd0);
 
-    // Timer digit extraction
-    wire [3:0] t_hundreds = (timer / 7'd100) % 10;
-    wire [3:0] t_tens     = (timer / 7'd10) % 10;
-    wire [3:0] t_ones     = timer % 7'd10;
+    // Base Score digit extraction
+    wire [3:0] bs_tens = (base_score / 7'd10) % 10;
+    wire [3:0] bs_ones = base_score % 7'd10;
 
-    wire t_blank_hundreds = (t_hundreds == 4'd0);
-    wire t_blank_tens     = t_blank_hundreds && (t_tens == 4'd0);
+    wire bs_blank_tens = (bs_tens == 4'd0);
 
     // Digit mapping (scan_idx -> value)
     // New swapped layout (scan_idx 7→0):
-    // [7] timer hundreds (blank if leading zero or !running)
-    // [6] timer tens     (blank if leading zero or !running)
-    // [5] timer ones     (blank if !running)
-    // [4] blank
+    // [7] blank
+    // [6] blank
+    // [5] base_score tens (blank if leading zero)
+    // [4] base_score ones
     // [3] score thousands (blank if leading zero)
     // [2] score hundreds  (blank if leading zero)
     // [1] score tens      (blank if leading zero)
@@ -68,10 +65,10 @@ module seg_arr_output(
     always @(*) begin
         digit_blank = 1'b0;
         case (scan_idx)
-            3'd7: begin digit_val = 4'h0;       digit_blank = 1'b1; end // Always blank (Timer < 1000)
-            3'd6: begin digit_val = t_hundreds; digit_blank = !is_timer_running || t_blank_hundreds; end
-            3'd5: begin digit_val = t_tens;     digit_blank = !is_timer_running || t_blank_tens; end
-            3'd4: begin digit_val = t_ones;     digit_blank = !is_timer_running; end 
+            3'd7: begin digit_val = 4'h0;    digit_blank = 1'b1; end
+            3'd6: begin digit_val = 4'h0;    digit_blank = 1'b1; end
+            3'd5: begin digit_val = bs_tens; digit_blank = bs_blank_tens; end
+            3'd4: begin digit_val = bs_ones; digit_blank = 1'b0; end 
             3'd3: begin digit_val = thousands; digit_blank = blank_thousands; end // score thousands
             3'd2: begin digit_val = hundreds;  digit_blank = blank_hundreds;  end // score hundreds
             3'd1: begin digit_val = tens;      digit_blank = blank_tens;      end // score tens

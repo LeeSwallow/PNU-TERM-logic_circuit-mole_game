@@ -31,6 +31,7 @@ wire [2:0] gsm_state;
 wire [1:0] gsm_stage;
 wire [1:0] gsm_lives;
 wire [9:0] gsm_score;
+wire [6:0] gsm_base_score;
 wire [9:0] gsm_high_score;
 wire gsm_high_score_updated;
 gsm gsm_inst(
@@ -46,6 +47,7 @@ gsm gsm_inst(
     .stage(gsm_stage),
     .lives(gsm_lives),
     .score(gsm_score),
+    .base_score(gsm_base_score),
     .high_score(gsm_high_score),
     .high_score_updated(gsm_high_score_updated)
 );
@@ -138,8 +140,7 @@ instantiate bin to 7-segment 8 array display module
 seg_arr_output seg_inst(
     .clk_1mhz(clk_1mhz),
     .rst(rst),
-    .is_timer_running(gsm_timer_running),
-    .timer(gsm_timer),
+    .base_score(gsm_base_score), // 0~10
     .score(gsm_score),
     .seg_out(seg_arr_out),
     .array_out(seg_sel_out)
@@ -277,7 +278,9 @@ always @(posedge clk_1mhz or posedge rst) begin
                     end
                 end
                 if (gsm_timer_sync == 2'b10) begin // timer stopped by zero(negative edge)
-                    if (gsm_stage < 2'd3) begin
+                    if (gsm_base_score > 7'd0) begin
+                        gsm_flag <= 4'b1101; // to game over
+                    end else if (gsm_stage < 2'd3) begin
                         gsm_flag <= 4'b1100; // to stage clear
                     end else begin
                         gsm_flag <= 4'b1110; // to game clear
@@ -285,9 +288,15 @@ always @(posedge clk_1mhz or posedge rst) begin
                     gsm_trig <= 1'b1;
                 end
             end else begin
-                // no lives left -> game over
+                // if lives reach zero stage end
                 if (!gsm_done) begin
-                    gsm_flag <= 4'b1101; // to game over
+                    if (gsm_base_score > 7'd0) begin
+                        gsm_flag <= 4'b1101; // to game over
+                    end else if (gsm_stage < 2'd3) begin
+                        gsm_flag <= 4'b1100; // to stage clear
+                    end else begin
+                        gsm_flag <= 4'b1110; // to game clear
+                    end
                     gsm_trig <= 1'b1;
                 end
             end

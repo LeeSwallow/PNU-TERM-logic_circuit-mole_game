@@ -10,10 +10,12 @@ module gsm(
     output reg [1:0] stage, // current stage
     output reg [1:0] lives, // current lives
     output reg [9:0] score, // current score
+    output reg [6:0] base_score, // base score for current stage
     output reg [9:0] high_score, // high score ever achieved
     output reg high_score_updated // high score updated flag
 );
-localparam integer BASE_DURATION = 10'd1000; 
+localparam integer BASE_DURATION = 10'd1000;
+localparam integer BASE_SCORE = 7'd30; 
 localparam integer PLAY_DURATION = 7'd60; 
 localparam integer READY_DURATION = 7'd4; 
 
@@ -29,6 +31,7 @@ always @(posedge clk_1mhz) begin
         state <= 3'b001; // ready
         stage <= 2'd1; // stage 1
         lives <= 2'd3; // 3 lives
+        base_score <= BASE_SCORE; // base score
         score <= 10'd0; // 0 score
         high_score <= 10'd0; // 0 high score
         high_score_updated <= 1'b0; // high score updated flag
@@ -46,7 +49,12 @@ always @(posedge clk_1mhz) begin
 
             case (flag)
                 // in-game updates
-                4'b0001: begin score <= score + 10'd1; end // score increment
+                4'b0001: begin 
+                    score <= score + 10'd1; 
+                    if (base_score > 0) begin
+                        base_score <= base_score - 7'd1;
+                    end
+                end // score increment
                 4'b0010: begin if (lives > 0) lives <= lives - 2'd1; end // life decrement
                 4'b0100: begin timer_running <= 1'b0; end // pause timer countdown
                 4'b0101: begin timer_running <= 1'b1; end // resume timer countdown
@@ -57,6 +65,7 @@ always @(posedge clk_1mhz) begin
                     timer <= READY_DURATION;
                     timer_running <= 1'b0; 
                     lives <= 2'd3; // reset lives
+                    base_score <= BASE_SCORE; // reset base score
                     high_score_updated <= 1'b0;
                 end
                 // to playing(from ready)                
@@ -99,6 +108,7 @@ always @(posedge clk_1mhz) begin
                     stage <= 2'd1; // reset stage
                     lives <= 2'd3; // reset lives
                     score <= 10'd0; // reset score
+                    base_score <= BASE_SCORE; // reset base score
                     high_score_updated <= 1'b0;
                 end
             endcase
