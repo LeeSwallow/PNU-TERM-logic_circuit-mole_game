@@ -1,0 +1,31 @@
+#-----------------------------------------------------------
+# Vivado v2020.1 (64-bit)
+# SW Build 2902540 on Wed May 27 19:54:49 MDT 2020
+# IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
+# Start of session at: Sat Nov 29 10:50:17 2025
+# Process ID: 24288
+# Current directory: D:/Univ/logic_circuit/term_project
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent25668 D:\Univ\logic_circuit\term_project\term_project.xpr
+# Log file: D:/Univ/logic_circuit/term_project/vivado.log
+# Journal file: D:/Univ/logic_circuit/term_project\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project D:/Univ/logic_circuit/term_project/term_project.xpr
+update_compile_order -fileset sources_1
+synth_design -rtl -name rtl_1
+synth_design -rtl -name rtl_1
+synth_design -rtl -name rtl_1
+update_compile_order -fileset sources_1
+update_compile_order -fileset sources_1
+synth_design -rtl -name rtl_1
+synth_design -rtl -name rtl_1
+refresh_design
+reset_run synth_1
+launch_runs synth_1 -jobs 8
+wait_on_run synth_1
+refresh_design
+reset_run synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1
+close_design
+open_run impl_1

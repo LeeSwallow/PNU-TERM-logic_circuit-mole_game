@@ -1,7 +1,7 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------------------------------------------------
 | Tool Version     : Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-| Date             : Mon Nov 24 20:38:09 2025
+| Date             : Sat Nov 29 15:55:17 2025
 | Host             : Swallow-Laptop running 64-bit major release  (build 9200)
 | Command          : report_power -file gm_power_routed.rpt -pb gm_power_summary_routed.pb -rpx gm_power_routed.rpx
 | Design           : gm
@@ -30,14 +30,14 @@ Table of Contents
 ----------
 
 +--------------------------+----------------------------------+
-| Total On-Chip Power (W)  | 24.209 (Junction temp exceeded!) |
+| Total On-Chip Power (W)  | 23.678 (Junction temp exceeded!) |
 | Design Power Budget (W)  | Unspecified*                     |
 | Power Budget Margin (W)  | NA                               |
-| Dynamic (W)              | 23.880                           |
-| Device Static (W)        | 0.329                            |
+| Dynamic (W)              | 23.361                           |
+| Device Static (W)        | 0.317                            |
 | Effective TJA (C/W)      | 2.7                              |
-| Max Ambient (C)          | 19.1                             |
-| Junction Temperature (C) | 90.9                             |
+| Max Ambient (C)          | 20.6                             |
+| Junction Temperature (C) | 89.4                             |
 | Confidence Level         | Low                              |
 | Setting File             | ---                              |
 | Simulation Activity File | ---                              |
@@ -52,18 +52,17 @@ Table of Contents
 +----------------+-----------+----------+-----------+-----------------+
 | On-Chip        | Power (W) | Used     | Available | Utilization (%) |
 +----------------+-----------+----------+-----------+-----------------+
-| Slice Logic    |     1.506 |     1093 |       --- |             --- |
-|   LUT as Logic |     1.335 |      575 |     48000 |            1.20 |
-|   CARRY4       |     0.092 |       61 |     16000 |            0.38 |
-|   Register     |     0.073 |      282 |     96000 |            0.29 |
-|   BUFG         |     0.006 |        1 |        32 |            3.13 |
-|   F7/F8 Muxes  |    <0.001 |        1 |     64000 |           <0.01 |
-|   Others       |     0.000 |       21 |       --- |             --- |
-| Signals        |     1.325 |      793 |       --- |             --- |
+| Slice Logic    |     1.853 |     1196 |       --- |             --- |
+|   LUT as Logic |     1.707 |      647 |     48000 |            1.35 |
+|   CARRY4       |     0.073 |       72 |     16000 |            0.45 |
+|   Register     |     0.065 |      270 |     96000 |            0.28 |
+|   BUFG         |     0.009 |        2 |        32 |            6.25 |
+|   Others       |     0.000 |       22 |       --- |             --- |
+| Signals        |     1.698 |      911 |       --- |             --- |
 | DSPs           |    <0.001 |        1 |       140 |            0.71 |
-| I/O            |    21.049 |       62 |       338 |           18.34 |
-| Static Power   |     0.329 |          |           |                 |
-| Total          |    24.209 |          |           |                 |
+| I/O            |    19.809 |       70 |       338 |           20.71 |
+| Static Power   |     0.317 |          |           |                 |
+| Total          |    23.678 |          |           |                 |
 +----------------+-----------+----------+-----------+-----------------+
 
 
@@ -73,16 +72,16 @@ Table of Contents
 +-----------+-------------+-----------+-------------+------------+-------------+-------------+------------+
 | Source    | Voltage (V) | Total (A) | Dynamic (A) | Static (A) | Powerup (A) | Budget (A)  | Margin (A) |
 +-----------+-------------+-----------+-------------+------------+-------------+-------------+------------+
-| Vccint    |       1.000 |     3.060 |       2.879 |      0.182 |       NA    | Unspecified | NA         |
-| Vccaux    |       1.800 |     0.818 |       0.770 |      0.048 |       NA    | Unspecified | NA         |
-| Vcco33    |       3.300 |     5.948 |       5.944 |      0.004 |       NA    | Unspecified | NA         |
+| Vccint    |       1.000 |     3.772 |       3.600 |      0.173 |       NA    | Unspecified | NA         |
+| Vccaux    |       1.800 |     0.771 |       0.724 |      0.047 |       NA    | Unspecified | NA         |
+| Vcco33    |       3.300 |     5.597 |       5.593 |      0.004 |       NA    | Unspecified | NA         |
 | Vcco25    |       2.500 |     0.000 |       0.000 |      0.000 |       NA    | Unspecified | NA         |
 | Vcco18    |       1.800 |     0.000 |       0.000 |      0.000 |       NA    | Unspecified | NA         |
 | Vcco15    |       1.500 |     0.000 |       0.000 |      0.000 |       NA    | Unspecified | NA         |
 | Vcco135   |       1.350 |     0.000 |       0.000 |      0.000 |       NA    | Unspecified | NA         |
 | Vcco12    |       1.200 |     0.000 |       0.000 |      0.000 |       NA    | Unspecified | NA         |
 | Vccaux_io |       1.800 |     0.000 |       0.000 |      0.000 |       NA    | Unspecified | NA         |
-| Vccbram   |       1.000 |     0.012 |       0.000 |      0.012 |       NA    | Unspecified | NA         |
+| Vccbram   |       1.000 |     0.011 |       0.000 |      0.011 |       NA    | Unspecified | NA         |
 | Vccadc    |       1.800 |     0.020 |       0.000 |      0.020 |       NA    | Unspecified | NA         |
 +-----------+-------------+-----------+-------------+------------+-------------+-------------+------------+
 
@@ -135,19 +134,21 @@ Table of Contents
 3.1 By Hierarchy
 ----------------
 
-+----------------+-----------+
-| Name           | Power (W) |
-+----------------+-----------+
-| gm             |    23.880 |
-|   gsm_inst     |     0.633 |
-|   igm_inst     |     1.300 |
-|     rg_inst    |     0.614 |
-|   kbi_inst     |     0.048 |
-|   lcd_inst     |     0.135 |
-|   seg_inst     |     0.205 |
-|   servo_inst   |     0.160 |
-|   sndm_inst    |     0.252 |
-|     peizo_inst |     0.160 |
-+----------------+-----------+
++-------------------+-----------+
+| Name              | Power (W) |
++-------------------+-----------+
+| gm                |    23.361 |
+|   gsm_inst        |     0.238 |
+|   igm_inst        |     1.261 |
+|     rg_inst       |     0.627 |
+|   kbi_inst        |     0.047 |
+|   lcd_inst        |     1.333 |
+|   rgb_led_inst    |     0.004 |
+|   seg_inst        |     0.196 |
+|   seg_single_inst |     0.031 |
+|   servo_inst      |     0.149 |
+|   sndm_inst       |     0.197 |
+|     peizo_inst    |     0.122 |
++-------------------+-----------+
 
 

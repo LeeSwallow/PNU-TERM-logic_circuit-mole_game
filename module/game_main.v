@@ -3,8 +3,9 @@ module gm(
     input wire [10:0] btn_in, // button inputs
     output wire piezo_out, // piezo output
     output wire [7:0] led_out, // LED outputs
-    output wire [7:0] seg_out, // 7-segment display outputs
-    output wire [7:0] seg_arr_out, // 7-segment array digit select outputs
+    output wire [7:0] seg_out, // 7-segment display output
+    output wire [7:0] seg_arr_out, // 7-segment display outputs
+    output wire [7:0] seg_sel_out, // 7-segment array digit select outputs
     output wire servo_out, // servo output,
     output wire [3:0] led_red_out,
     output wire [3:0] led_green_out,
@@ -30,6 +31,8 @@ wire [2:0] gsm_state;
 wire [1:0] gsm_stage;
 wire [1:0] gsm_lives;
 wire [9:0] gsm_score;
+wire [9:0] gsm_high_score;
+wire gsm_high_score_updated;
 gsm gsm_inst(
     .clk_1mhz(clk_1mhz),
     .rst(rst),
@@ -42,7 +45,9 @@ gsm gsm_inst(
     .state(gsm_state),
     .stage(gsm_stage),
     .lives(gsm_lives),
-    .score(gsm_score)
+    .score(gsm_score),
+    .high_score(gsm_high_score),
+    .high_score_updated(gsm_high_score_updated)
 );
 /*
 ===============================================================================
@@ -51,7 +56,7 @@ instantiate in-game manager
 */
 wire [3:0] igm_mole_pos;
 wire igm_enable;
-assign igm_enable = ((gsm_state == 3'd1) && gsm_timer_running); // enable when playing and timer running
+assign igm_enable = ((gsm_state == 3'b010) && gsm_timer_running); // enable when playing and timer running
 igm igm_inst(
     .clk_1mhz(clk_1mhz),
     .rst(rst),
@@ -101,19 +106,31 @@ leds_output leds_inst(
     .mole_pos(igm_mole_pos),
     .leds(led_out)
 );
-
 /*
 ===============================================================================
 instantiate bin to 7-segment display module
 ===============================================================================
 */
+seg_output seg_single_inst(
+    .clk_1mhz(clk_1mhz),
+    .rst(rst),
+    .lives(gsm_lives),
+    .seg_out(seg_out)
+);
+
+/*
+===============================================================================
+instantiate bin to 7-segment 8 array display module
+===============================================================================
+*/
 seg_arr_output seg_inst(
     .clk_1mhz(clk_1mhz),
     .rst(rst),
-    .lives(gsm_lives), // extend to 4 bits
+    .is_timer_running(gsm_timer_running),
+    .timer(gsm_timer),
     .score(gsm_score),
-    .seg_out(seg_out),
-    .array_out(seg_arr_out)
+    .seg_out(seg_arr_out),
+    .array_out(seg_sel_out)
 );
 
 /*
@@ -139,6 +156,8 @@ rgb_led_output rgb_led_inst(
     .clk(clk_1mhz),
     .rst(rst),
     .state(gsm_state),
+    .timer_running(gsm_timer_running),
+    .timer(gsm_timer),
     .led_red(led_red_out),
     .led_green(led_green_out),
     .led_blue(led_blue_out)
@@ -152,8 +171,10 @@ instantiate text LCD output module
 text_lcd_output lcd_inst(
     .clk_1mhz(clk_1mhz),
     .rst(rst),
-    .state(gsm_state),
-    .stage(gsm_stage),
+    .gsm_state(gsm_state),
+    .gsm_stage(gsm_stage),
+    .gsm_high_score(gsm_high_score),
+    .gsm_high_score_updated(gsm_high_score_updated),
     .lcd_rs(lcd_rs),
     .lcd_rw(lcd_rw),
     .lcd_en(lcd_en),
@@ -171,7 +192,7 @@ implement game main FSM
 ===============================================================================
 */
 reg [1:0] snd_sync, btn_sync, gsm_timer_sync, gsm_sec_sync;
-reg ready_btn_clicked;
+reg ready_btn_clicked, state_sound_played;
 
 always @(posedge clk_1mhz or posedge rst) begin
     if (rst) begin
@@ -184,6 +205,7 @@ always @(posedge clk_1mhz or posedge rst) begin
         gsm_timer_sync <= 2'd0;
         gsm_sec_sync <= 2'd0;
         ready_btn_clicked <= 1'b0;
+        state_sound_played <= 1'b0;
     end else begin
         // synchronize signals
         gsm_timer_sync <= {gsm_timer_sync[0], gsm_timer_running};
@@ -224,6 +246,7 @@ always @(posedge clk_1mhz or posedge rst) begin
             gsm_trig <= 1'b0;
             snd_trig <= 1'b0;
             ready_btn_clicked <= 1'b0;
+            state_sound_played <= 1'b0;
             
             if (gsm_lives != 2'd0) begin
                 if (btn_sync == 2'b01) begin // button pressed(1~8)
@@ -262,14 +285,14 @@ always @(posedge clk_1mhz or posedge rst) begin
         else if (gsm_state == 3'b011) begin
             gsm_trig <= 1'b0;
             snd_trig <= 1'b0;
-            if (!snd_playing) begin
-                if (snd_mode != 3'b110) begin
-                    snd_mode <= 3'b110; // game over sound
-                    snd_trig <= 1'b1;
-                end else begin
-                    gsm_flag <= 4'b1000; // to ready
-                    gsm_trig <= 1'b1;
-                end
+            if (!snd_playing && !state_sound_played) begin
+                snd_mode <= 3'b110; // game over sound
+                snd_trig <= 1'b1;
+                state_sound_played <= 1'b1; // ensure sound played only once
+            end
+            if (btn_sync == 2'b01 && (btn_value == 4'd10)) begin // start button pressed
+                gsm_flag <= 4'b1111; // reset to ready
+                gsm_trig <= 1'b1;
             end
         end
 
@@ -292,14 +315,15 @@ always @(posedge clk_1mhz or posedge rst) begin
         else if (gsm_state == 3'b101) begin
             gsm_trig <= 1'b0;
             snd_trig <= 1'b0;
-            if (!snd_playing) begin
-                if (snd_mode != 3'b111) begin
-                    snd_mode <= 3'b111; // game clear sound
-                    snd_trig <= 1'b1;
-                end else begin
-                    gsm_flag <= 4'b1000; // to ready
-                    gsm_trig <= 1'b1;
-                end
+            if (!snd_playing && !state_sound_played) begin
+                snd_mode <= 3'b111; // game clear sound
+                snd_trig <= 1'b1;
+                state_sound_played <= 1'b1; // ensure sound played only once
+            end
+            
+            if (btn_sync == 2'b01 && (btn_value == 4'd10)) begin // start button pressed
+                gsm_flag <= 4'b1111; // reset to ready
+                gsm_trig <= 1'b1;
             end
         end
     end

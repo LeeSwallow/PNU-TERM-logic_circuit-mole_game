@@ -1,0 +1,380 @@
+#-----------------------------------------------------------
+# Vivado v2020.1 (64-bit)
+# SW Build 2902540 on Wed May 27 19:54:49 MDT 2020
+# IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
+# Start of session at: Sat Nov 29 10:50:17 2025
+# Process ID: 24288
+# Current directory: D:/Univ/logic_circuit/term_project
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent25668 D:\Univ\logic_circuit\term_project\term_project.xpr
+# Log file: D:/Univ/logic_circuit/term_project/vivado.log
+# Journal file: D:/Univ/logic_circuit/term_project\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project D:/Univ/logic_circuit/term_project/term_project.xpr
+Scanning sources...
+Finished scanning sources
+WARNING: [filemgmt 56-3] Default IP Output Path : Could not find the directory 'D:/Univ/logic_circuit/term_project/term_project.srcs/sources_1'.
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2020.1/data/ip'.
+open_project: Time (s): cpu = 00:00:22 ; elapsed = 00:00:12 . Memory (MB): peak = 1015.836 ; gain = 0.000
+update_compile_order -fileset sources_1
+synth_design -rtl -name rtl_1
+Command: synth_design -rtl -name rtl_1
+Starting synth_design
+Using part: xc7s75fgga484-1
+Top: gm
+INFO: [Device 21-403] Loading part xc7s75fgga484-1
+ERROR: [Synth 8-2715] syntax error near : [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:108]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:115]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:119]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:123]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:127]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:131]
+ERROR: [Synth 8-2715] syntax error near : [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:141]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:148]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:153]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:157]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:161]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:165]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:169]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:173]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:190]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:194]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:198]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:202]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:206]
+Failed to read verilog 'D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v'
+1 Infos, 0 Warnings, 0 Critical Warnings and 20 Errors encountered.
+synth_design failed
+ERROR: [Vivado_Tcl 4-5] Elaboration failed - please see the console for details
+synth_design -rtl -name rtl_1
+Command: synth_design -rtl -name rtl_1
+Starting synth_design
+Using part: xc7s75fgga484-1
+Top: gm
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:115]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:119]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:123]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:127]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:131]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:148]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:153]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:157]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:161]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:165]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:169]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:173]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:190]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:194]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:198]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:202]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:206]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:210]
+ERROR: [Synth 8-2715] syntax error near ' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:214]
+Failed to read verilog 'D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v'
+0 Infos, 0 Warnings, 0 Critical Warnings and 20 Errors encountered.
+synth_design failed
+ERROR: [Vivado_Tcl 4-5] Elaboration failed - please see the console for details
+synth_design -rtl -name rtl_1
+Command: synth_design -rtl -name rtl_1
+Starting synth_design
+Using part: xc7s75fgga484-1
+Top: gm
+ERROR: [Synth 8-1031] cnt is not declared [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:47]
+ERROR: [Synth 8-1031] cnt is not declared [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:51]
+ERROR: [Synth 8-1031] cnt is not declared [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:54]
+ERROR: [Synth 8-1031] cnt is not declared [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:57]
+ERROR: [Synth 8-1031] cnt is not declared [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:60]
+ERROR: [Synth 8-1031] cnt is not declared [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:63]
+ERROR: [Synth 8-1031] cnt is not declared [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:66]
+ERROR: [Synth 8-1031] cnt is not declared [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:69]
+ERROR: [Synth 8-1031] cnt is not declared [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:108]
+ERROR: [Synth 8-1031] cnt is not declared [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:141]
+ERROR: [Synth 8-1031] cnt is not declared [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:183]
+ERROR: [Synth 8-1031] cnt is not declared [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:232]
+ERROR: [Synth 8-1031] cnt is not declared [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:285]
+ERROR: [Synth 8-1031] cnt is not declared [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:339]
+ERROR: [Synth 8-1031] cnt is not declared [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:354]
+ERROR: [Synth 8-1031] cnt is not declared [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:395]
+INFO: [Synth 8-2350] module text_lcd_output ignored due to previous errors [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:1]
+Failed to read verilog 'D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v'
+1 Infos, 0 Warnings, 0 Critical Warnings and 17 Errors encountered.
+synth_design failed
+ERROR: [Vivado_Tcl 4-5] Elaboration failed - please see the console for details
+update_compile_order -fileset sources_1
+update_compile_order -fileset sources_1
+synth_design -rtl -name rtl_1
+Command: synth_design -rtl -name rtl_1
+Starting synth_design
+Using part: xc7s75fgga484-1
+Top: gm
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:03 ; elapsed = 00:00:03 . Memory (MB): peak = 1435.113 ; gain = 33.945
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'gm' [D:/Univ/logic_circuit/term_project/module/game_main.v:1]
+INFO: [Synth 8-6157] synthesizing module 'gsm' [D:/Univ/logic_circuit/term_project/module/manager/game_state_manager.v:1]
+	Parameter BASE_DURATION bound to: 1000 - type: integer 
+	Parameter PLAY_DURATION bound to: 30 - type: integer 
+	Parameter READY_DURATION bound to: 4 - type: integer 
+INFO: [Synth 8-155] case statement is not full and has no default [D:/Univ/logic_circuit/term_project/module/manager/game_state_manager.v:49]
+INFO: [Synth 8-6155] done synthesizing module 'gsm' (1#1) [D:/Univ/logic_circuit/term_project/module/manager/game_state_manager.v:1]
+INFO: [Synth 8-6157] synthesizing module 'igm' [D:/Univ/logic_circuit/term_project/module/manager/in_game_manager.v:1]
+	Parameter BASE_DURATION bound to: 1000 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'rand_gen' [D:/Univ/logic_circuit/term_project/module/unit/ramdom_generator.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'rand_gen' (2#1) [D:/Univ/logic_circuit/term_project/module/unit/ramdom_generator.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'igm' (3#1) [D:/Univ/logic_circuit/term_project/module/manager/in_game_manager.v:1]
+INFO: [Synth 8-6157] synthesizing module 'sndm' [D:/Univ/logic_circuit/term_project/module/manager/sound_manager.v:1]
+	Parameter BASE_CYCLES bound to: 200000 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'peizo_output' [D:/Univ/logic_circuit/term_project/module/unit/peizo_output.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'peizo_output' (4#1) [D:/Univ/logic_circuit/term_project/module/unit/peizo_output.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'sndm' (5#1) [D:/Univ/logic_circuit/term_project/module/manager/sound_manager.v:1]
+INFO: [Synth 8-6157] synthesizing module 'key_button_input' [D:/Univ/logic_circuit/term_project/module/unit/key_button_input.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'key_button_input' (6#1) [D:/Univ/logic_circuit/term_project/module/unit/key_button_input.v:1]
+INFO: [Synth 8-6157] synthesizing module 'leds_output' [D:/Univ/logic_circuit/term_project/module/unit/leds_output.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'leds_output' (7#1) [D:/Univ/logic_circuit/term_project/module/unit/leds_output.v:1]
+INFO: [Synth 8-6157] synthesizing module 'seg_arr_output' [D:/Univ/logic_circuit/term_project/module/unit/7seg_arr_output.v:6]
+	Parameter REFRESH_DIV bound to: 1000 - type: integer 
+	Parameter COMMON_ANODE bound to: 1 - type: integer 
+INFO: [Synth 8-226] default block is never used [D:/Univ/logic_circuit/term_project/module/unit/7seg_arr_output.v:64]
+INFO: [Synth 8-6155] done synthesizing module 'seg_arr_output' (8#1) [D:/Univ/logic_circuit/term_project/module/unit/7seg_arr_output.v:6]
+INFO: [Synth 8-6157] synthesizing module 'servo_output' [D:/Univ/logic_circuit/term_project/module/unit/servo_output.v:6]
+	Parameter FRAME_CYCLES bound to: 20000 - type: integer 
+	Parameter MIN_PULSE_CYCLES bound to: 700 - type: integer 
+	Parameter MAX_PULSE_CYCLES bound to: 2300 - type: integer 
+	Parameter CENTER_PULSE_CYCLES bound to: 1500 - type: integer 
+	Parameter TIMER_MAX bound to: 60 - type: integer 
+	Parameter RANGE bound to: 1600 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'servo_output' (9#1) [D:/Univ/logic_circuit/term_project/module/unit/servo_output.v:6]
+INFO: [Synth 8-6157] synthesizing module 'rgb_led_output' [D:/Univ/logic_circuit/term_project/module/unit/rgb_led_output.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'rgb_led_output' (10#1) [D:/Univ/logic_circuit/term_project/module/unit/rgb_led_output.v:1]
+INFO: [Synth 8-6157] synthesizing module 'text_lcd_output' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:1]
+	Parameter delay bound to: 3'b000 
+	Parameter function_set bound to: 3'b001 
+	Parameter entry_mode bound to: 3'b010 
+	Parameter disp_onoff bound to: 3'b011 
+	Parameter line1 bound to: 3'b100 
+	Parameter line2 bound to: 3'b101 
+	Parameter delay_t bound to: 3'b110 
+	Parameter clear_disp bound to: 3'b111 
+INFO: [Synth 8-226] default block is never used [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:49]
+INFO: [Synth 8-155] case statement is not full and has no default [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:278]
+INFO: [Synth 8-6155] done synthesizing module 'text_lcd_output' (11#1) [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:1]
+ERROR: [Synth 8-448] named port connection 'state' does not exist for instance 'lcd_inst' of module 'text_lcd_output' [D:/Univ/logic_circuit/term_project/module/game_main.v:155]
+ERROR: [Synth 8-448] named port connection 'stage' does not exist for instance 'lcd_inst' of module 'text_lcd_output' [D:/Univ/logic_circuit/term_project/module/game_main.v:156]
+ERROR: [Synth 8-6156] failed synthesizing module 'gm' [D:/Univ/logic_circuit/term_project/module/game_main.v:1]
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:03 ; elapsed = 00:00:03 . Memory (MB): peak = 1476.207 ; gain = 75.039
+---------------------------------------------------------------------------------
+RTL Elaboration failed
+27 Infos, 0 Warnings, 0 Critical Warnings and 4 Errors encountered.
+synth_design failed
+ERROR: [Vivado_Tcl 4-5] Elaboration failed - please see the console for details
+synth_design -rtl -name rtl_1
+Command: synth_design -rtl -name rtl_1
+Starting synth_design
+Using part: xc7s75fgga484-1
+Top: gm
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:04 ; elapsed = 00:00:03 . Memory (MB): peak = 1499.586 ; gain = 21.301
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'gm' [D:/Univ/logic_circuit/term_project/module/game_main.v:1]
+INFO: [Synth 8-6157] synthesizing module 'gsm' [D:/Univ/logic_circuit/term_project/module/manager/game_state_manager.v:1]
+	Parameter BASE_DURATION bound to: 1000 - type: integer 
+	Parameter PLAY_DURATION bound to: 30 - type: integer 
+	Parameter READY_DURATION bound to: 4 - type: integer 
+INFO: [Synth 8-155] case statement is not full and has no default [D:/Univ/logic_circuit/term_project/module/manager/game_state_manager.v:49]
+INFO: [Synth 8-6155] done synthesizing module 'gsm' (1#1) [D:/Univ/logic_circuit/term_project/module/manager/game_state_manager.v:1]
+INFO: [Synth 8-6157] synthesizing module 'igm' [D:/Univ/logic_circuit/term_project/module/manager/in_game_manager.v:1]
+	Parameter BASE_DURATION bound to: 1000 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'rand_gen' [D:/Univ/logic_circuit/term_project/module/unit/ramdom_generator.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'rand_gen' (2#1) [D:/Univ/logic_circuit/term_project/module/unit/ramdom_generator.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'igm' (3#1) [D:/Univ/logic_circuit/term_project/module/manager/in_game_manager.v:1]
+INFO: [Synth 8-6157] synthesizing module 'sndm' [D:/Univ/logic_circuit/term_project/module/manager/sound_manager.v:1]
+	Parameter BASE_CYCLES bound to: 200000 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'peizo_output' [D:/Univ/logic_circuit/term_project/module/unit/peizo_output.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'peizo_output' (4#1) [D:/Univ/logic_circuit/term_project/module/unit/peizo_output.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'sndm' (5#1) [D:/Univ/logic_circuit/term_project/module/manager/sound_manager.v:1]
+INFO: [Synth 8-6157] synthesizing module 'key_button_input' [D:/Univ/logic_circuit/term_project/module/unit/key_button_input.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'key_button_input' (6#1) [D:/Univ/logic_circuit/term_project/module/unit/key_button_input.v:1]
+INFO: [Synth 8-6157] synthesizing module 'leds_output' [D:/Univ/logic_circuit/term_project/module/unit/leds_output.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'leds_output' (7#1) [D:/Univ/logic_circuit/term_project/module/unit/leds_output.v:1]
+INFO: [Synth 8-6157] synthesizing module 'seg_arr_output' [D:/Univ/logic_circuit/term_project/module/unit/7seg_arr_output.v:6]
+	Parameter REFRESH_DIV bound to: 1000 - type: integer 
+	Parameter COMMON_ANODE bound to: 1 - type: integer 
+INFO: [Synth 8-226] default block is never used [D:/Univ/logic_circuit/term_project/module/unit/7seg_arr_output.v:64]
+INFO: [Synth 8-6155] done synthesizing module 'seg_arr_output' (8#1) [D:/Univ/logic_circuit/term_project/module/unit/7seg_arr_output.v:6]
+INFO: [Synth 8-6157] synthesizing module 'servo_output' [D:/Univ/logic_circuit/term_project/module/unit/servo_output.v:6]
+	Parameter FRAME_CYCLES bound to: 20000 - type: integer 
+	Parameter MIN_PULSE_CYCLES bound to: 700 - type: integer 
+	Parameter MAX_PULSE_CYCLES bound to: 2300 - type: integer 
+	Parameter CENTER_PULSE_CYCLES bound to: 1500 - type: integer 
+	Parameter TIMER_MAX bound to: 60 - type: integer 
+	Parameter RANGE bound to: 1600 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'servo_output' (9#1) [D:/Univ/logic_circuit/term_project/module/unit/servo_output.v:6]
+INFO: [Synth 8-6157] synthesizing module 'rgb_led_output' [D:/Univ/logic_circuit/term_project/module/unit/rgb_led_output.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'rgb_led_output' (10#1) [D:/Univ/logic_circuit/term_project/module/unit/rgb_led_output.v:1]
+INFO: [Synth 8-6157] synthesizing module 'text_lcd_output' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:1]
+	Parameter delay bound to: 3'b000 
+	Parameter function_set bound to: 3'b001 
+	Parameter entry_mode bound to: 3'b010 
+	Parameter disp_onoff bound to: 3'b011 
+	Parameter line1 bound to: 3'b100 
+	Parameter line2 bound to: 3'b101 
+	Parameter delay_t bound to: 3'b110 
+	Parameter clear_disp bound to: 3'b111 
+INFO: [Synth 8-226] default block is never used [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:49]
+INFO: [Synth 8-155] case statement is not full and has no default [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:278]
+INFO: [Synth 8-6155] done synthesizing module 'text_lcd_output' (11#1) [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'gm' (12#1) [D:/Univ/logic_circuit/term_project/module/game_main.v:1]
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:05 ; elapsed = 00:00:04 . Memory (MB): peak = 1499.586 ; gain = 21.301
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 1515.898 ; gain = 37.613
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 1515.898 ; gain = 37.613
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.010 . Memory (MB): peak = 1515.898 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [D:/Univ/logic_circuit/term_project/const/const_main.xdc]
+Finished Parsing XDC File [D:/Univ/logic_circuit/term_project/const/const_main.xdc]
+Completed Processing XDC Constraints
+
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1637.699 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+RTL Elaboration Complete:  : Time (s): cpu = 00:00:14 ; elapsed = 00:00:08 . Memory (MB): peak = 1637.699 ; gain = 159.414
+31 Infos, 0 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:14 ; elapsed = 00:00:08 . Memory (MB): peak = 1637.699 ; gain = 159.414
+refresh_design
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [D:/Univ/logic_circuit/term_project/const/const_main.xdc]
+Finished Parsing XDC File [D:/Univ/logic_circuit/term_project/const/const_main.xdc]
+Completed Processing XDC Constraints
+
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+reset_run synth_1
+launch_runs synth_1 -jobs 8
+[Sat Nov 29 11:21:18 2025] Launched synth_1...
+Run output will be captured here: D:/Univ/logic_circuit/term_project/term_project.runs/synth_1/runme.log
+refresh_design
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:02 ; elapsed = 00:00:03 . Memory (MB): peak = 1703.156 ; gain = 0.000
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'gm' [D:/Univ/logic_circuit/term_project/module/game_main.v:1]
+INFO: [Synth 8-6157] synthesizing module 'gsm' [D:/Univ/logic_circuit/term_project/module/manager/game_state_manager.v:1]
+	Parameter BASE_DURATION bound to: 1000 - type: integer 
+	Parameter PLAY_DURATION bound to: 30 - type: integer 
+	Parameter READY_DURATION bound to: 4 - type: integer 
+INFO: [Synth 8-155] case statement is not full and has no default [D:/Univ/logic_circuit/term_project/module/manager/game_state_manager.v:43]
+INFO: [Synth 8-6155] done synthesizing module 'gsm' (1#1) [D:/Univ/logic_circuit/term_project/module/manager/game_state_manager.v:1]
+INFO: [Synth 8-6157] synthesizing module 'igm' [D:/Univ/logic_circuit/term_project/module/manager/in_game_manager.v:1]
+	Parameter BASE_DURATION bound to: 1000 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'rand_gen' [D:/Univ/logic_circuit/term_project/module/unit/ramdom_generator.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'rand_gen' (2#1) [D:/Univ/logic_circuit/term_project/module/unit/ramdom_generator.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'igm' (3#1) [D:/Univ/logic_circuit/term_project/module/manager/in_game_manager.v:1]
+INFO: [Synth 8-6157] synthesizing module 'sndm' [D:/Univ/logic_circuit/term_project/module/manager/sound_manager.v:1]
+	Parameter BASE_CYCLES bound to: 200000 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'peizo_output' [D:/Univ/logic_circuit/term_project/module/unit/peizo_output.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'peizo_output' (4#1) [D:/Univ/logic_circuit/term_project/module/unit/peizo_output.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'sndm' (5#1) [D:/Univ/logic_circuit/term_project/module/manager/sound_manager.v:1]
+INFO: [Synth 8-6157] synthesizing module 'key_button_input' [D:/Univ/logic_circuit/term_project/module/unit/key_button_input.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'key_button_input' (6#1) [D:/Univ/logic_circuit/term_project/module/unit/key_button_input.v:1]
+INFO: [Synth 8-6157] synthesizing module 'leds_output' [D:/Univ/logic_circuit/term_project/module/unit/leds_output.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'leds_output' (7#1) [D:/Univ/logic_circuit/term_project/module/unit/leds_output.v:1]
+INFO: [Synth 8-6157] synthesizing module 'seg_arr_output' [D:/Univ/logic_circuit/term_project/module/unit/7seg_arr_output.v:6]
+	Parameter REFRESH_DIV bound to: 1000 - type: integer 
+	Parameter COMMON_ANODE bound to: 1 - type: integer 
+INFO: [Synth 8-226] default block is never used [D:/Univ/logic_circuit/term_project/module/unit/7seg_arr_output.v:64]
+INFO: [Synth 8-6155] done synthesizing module 'seg_arr_output' (8#1) [D:/Univ/logic_circuit/term_project/module/unit/7seg_arr_output.v:6]
+INFO: [Synth 8-6157] synthesizing module 'servo_output' [D:/Univ/logic_circuit/term_project/module/unit/servo_output.v:6]
+	Parameter FRAME_CYCLES bound to: 20000 - type: integer 
+	Parameter MIN_PULSE_CYCLES bound to: 700 - type: integer 
+	Parameter MAX_PULSE_CYCLES bound to: 2300 - type: integer 
+	Parameter CENTER_PULSE_CYCLES bound to: 1500 - type: integer 
+	Parameter TIMER_MAX bound to: 60 - type: integer 
+	Parameter RANGE bound to: 1600 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'servo_output' (9#1) [D:/Univ/logic_circuit/term_project/module/unit/servo_output.v:6]
+INFO: [Synth 8-6157] synthesizing module 'rgb_led_output' [D:/Univ/logic_circuit/term_project/module/unit/rgb_led_output.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'rgb_led_output' (10#1) [D:/Univ/logic_circuit/term_project/module/unit/rgb_led_output.v:1]
+INFO: [Synth 8-6157] synthesizing module 'text_lcd_output' [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:1]
+	Parameter delay bound to: 3'b000 
+	Parameter function_set bound to: 3'b001 
+	Parameter entry_mode bound to: 3'b010 
+	Parameter disp_onoff bound to: 3'b011 
+	Parameter line1 bound to: 3'b100 
+	Parameter line2 bound to: 3'b101 
+	Parameter delay_t bound to: 3'b110 
+	Parameter clear_disp bound to: 3'b111 
+INFO: [Synth 8-226] default block is never used [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:49]
+INFO: [Synth 8-155] case statement is not full and has no default [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:278]
+INFO: [Synth 8-6155] done synthesizing module 'text_lcd_output' (11#1) [D:/Univ/logic_circuit/term_project/module/unit/text_lcd_output.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'gm' (12#1) [D:/Univ/logic_circuit/term_project/module/game_main.v:1]
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:03 ; elapsed = 00:00:03 . Memory (MB): peak = 1703.156 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:03 ; elapsed = 00:00:04 . Memory (MB): peak = 1716.430 ; gain = 13.273
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:03 ; elapsed = 00:00:04 . Memory (MB): peak = 1716.430 ; gain = 13.273
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.009 . Memory (MB): peak = 1721.117 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [D:/Univ/logic_circuit/term_project/const/const_main.xdc]
+Finished Parsing XDC File [D:/Univ/logic_circuit/term_project/const/const_main.xdc]
+Completed Processing XDC Constraints
+
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+refresh_design: Time (s): cpu = 00:00:08 ; elapsed = 00:00:06 . Memory (MB): peak = 1810.090 ; gain = 106.934
+reset_run synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+[Sat Nov 29 11:30:58 2025] Launched synth_1...
+Run output will be captured here: D:/Univ/logic_circuit/term_project/term_project.runs/synth_1/runme.log
+[Sat Nov 29 11:30:58 2025] Launched impl_1...
+Run output will be captured here: D:/Univ/logic_circuit/term_project/term_project.runs/impl_1/runme.log
+close_design
+open_run impl_1
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.006 . Memory (MB): peak = 1810.090 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 65 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-479] Netlist was created with Vivado 2020.1
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Timing 38-478] Restoring timing data from binary archive.
+INFO: [Timing 38-479] Binary timing data restore complete.
+INFO: [Project 1-856] Restoring constraints from binary archive.
+INFO: [Project 1-853] Binary constraint restore complete.
+Reading XDEF placement.
+Reading placer database...
+Reading XDEF routing.
+Read XDEF File: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.072 . Memory (MB): peak = 1970.680 ; gain = 0.000
+Restored from archive | CPU: 0.000000 secs | Memory: 0.000000 MB |
+Finished XDEF File Restore: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.073 . Memory (MB): peak = 1970.680 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1970.680 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+open_run: Time (s): cpu = 00:00:09 ; elapsed = 00:00:08 . Memory (MB): peak = 2029.184 ; gain = 219.094
+WARNING: [Timing 38-313] There are no user specified timing constraints. Timing constraints are needed for proper timing analysis.
+exit
+INFO: [Common 17-206] Exiting Vivado at Sat Nov 29 12:05:44 2025...

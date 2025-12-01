@@ -1,265 +1,445 @@
 module text_lcd_output (
     input  wire        clk_1mhz,
     input  wire        rst,
-    input  wire [2:0]  state,
-    input  wire [1:0]  stage,
+    input  wire [2:0]  gsm_state,
+    input  wire [1:0]  gsm_stage,
+    input  wire [9:0]  gsm_high_score,
+    input  wire        gsm_high_score_updated,
     output reg         lcd_rs,
     output reg         lcd_rw,
-    output reg         lcd_en,
+    output wire        lcd_en,
     output reg [7:0]   lcd_data
 );
 
-// -----------------------------------------------------------------------------
-// Parameters & timing
-// -----------------------------------------------------------------------------
-localparam INIT_DELAY_US  = 16_000; // >15ms after power
-localparam CMD_DELAY_US   = 60;     // command settle (>40us)
-localparam CHAR_DELAY_US  = 60;     // data write delay
-localparam PULSE_WIDTH_US = 2;      // EN high width (~ > 450ns)
 
-// Simple microsecond delay counter
-reg [15:0] us_cnt;  // enough for >65ms
-reg        delay_active;
-reg [15:0] delay_target;
+reg [3:0] state;
+parameter delay = 4'd0, 
+    function_set = 4'd1, 
+    entry_mode = 4'd2,
+    disp_onoff = 4'd3,
+    line1 = 4'd4,
+    line2 = 4'd5,
+    delay_t = 4'd6,
+    clear_disp = 4'd7,
+    idle = 4'd8;
 
-task start_delay(input [15:0] d);
-begin
-    delay_target  <= d;
-    us_cnt        <= 16'd0;
-    delay_active  <= 1'b1;
-end
-endtask
+reg update_req;
+reg [2:0] prev_gsm_state;
+reg prev_high_score_updated;
 
+// 0~999 high score digit extraction
+wire [9:0] high_score_clamped = (gsm_high_score > 10'd999) ? 10'd999 : gsm_high_score;
+wire [3:0] hs_hundreds = (high_score_clamped / 10'd100) % 10;
+wire [3:0] hs_tens     = (high_score_clamped / 10'd10) % 10;
+wire [3:0] hs_ones     = high_score_clamped % 10;
+
+// Update Request Logic
 always @(posedge clk_1mhz or posedge rst) begin
     if (rst) begin
-        us_cnt <= 16'd0;
-        delay_active <= 1'b0;
-    end else if (delay_active) begin
-        if (us_cnt < delay_target) begin
-            us_cnt <= us_cnt + 16'd1;
-        end else begin
-            delay_active <= 1'b0;
+        update_req <= 1'b1;
+        prev_gsm_state <= 3'b000;
+    end
+    else begin
+        if (gsm_state != prev_gsm_state) begin
+            update_req <= 1'b1;
+            prev_gsm_state <= gsm_state;
         end
+        if (gsm_high_score_updated != prev_high_score_updated) begin
+            update_req <= 1'b1;
+            prev_high_score_updated <= gsm_high_score_updated;
+        end
+        else if (state == clear_disp) update_req <= 1'b0;
     end
 end
 
-// -----------------------------------------------------------------------------
-// Build line buffers on demand
-// -----------------------------------------------------------------------------
-reg [7:0] line1 [0:15];
-reg [7:0] line2 [0:15];
+reg clk_100hz;
+reg [19:0] cnt_100hz, cnt;
 
-// Previous sampled values to detect change
-reg [2:0]  prev_state;
-reg [1:0]  prev_stage;
-
-wire need_update = (state != prev_state) || (stage != prev_stage);
-
-// Digit to ASCII helper
-function [7:0] D;
-    input [3:0] v;
-begin
-    D = 8'h30 + v; // '0'+v
-end
-endfunction
-
-// Select full state name (16 chars)
-function [127:0] get_state_text;
-    input [2:0] s;
-begin
-    case (s)
-        3'd0: get_state_text = "READY           ";
-        3'd1: get_state_text = "PLAY            ";
-        3'd3: get_state_text = "GAME OVER       ";
-        3'd4: get_state_text = "STAGE CLEAR     ";
-        3'd5: get_state_text = "GAME CLEAR      ";
-        default: get_state_text = "                ";
-    endcase
-end
-endfunction
-
-// Build buffers
-reg [127:0] next_line1;
-reg [127:0] next_line2;
-integer i;
-
+// Generate 100Hz clock from 1MHz clock
 always @(posedge clk_1mhz or posedge rst) begin
     if (rst) begin
-        prev_state <= 3'd7; // force first update
-        prev_stage <= 2'd0;
-    end else if (need_update && !updating && !init_phase) begin
-        prev_state <= state;
-        prev_stage <= stage;
-
-        // Prepare text
-        next_line1 = get_state_text(state);
-
-        if (state == 3'd3 || state == 3'd5) begin
-            // Game Over / Game Clear: No stage info
-            next_line2 = "                ";
-        end else begin
-            // "Stage X         "
-            next_line2 = {"Stage ", D({2'b00, stage}), "         "};
-        end
-
-        // Assign to line buffers
-        for (i=0; i<16; i=i+1) begin
-            line1[i] <= next_line1[127 - i*8 -: 8];
-            line2[i] <= next_line2[127 - i*8 -: 8];
-        end
-
-        request_update <= 1'b1;
-    end
-end
-
-// -----------------------------------------------------------------------------
-// LCD write FSM
-// -----------------------------------------------------------------------------
-localparam S_INIT_WAIT = 0,
-           S_INIT_FUNC = 1,
-           S_INIT_DISP = 2,
-           S_INIT_CLR  = 3,
-           S_INIT_ENTRY= 4,
-           S_IDLE      = 5,
-           S_SET_LINE1 = 6,
-           S_WRITE_L1  = 7,
-           S_SET_LINE2 = 8,
-           S_WRITE_L2  = 9;
-
-reg [3:0]  fsm_state;
-reg [4:0]  char_idx;
-reg        init_phase;
-reg        updating;
-reg        request_update;
-
-// Helper: issue command/data
-reg [7:0] pending_byte;
-reg       pending_is_data;
-reg [1:0] pulse_cnt;
-reg       issuing;
-
-task issue(input [7:0] b, input is_data, input [15:0] wait_us);
-begin
-    pending_byte    <= b;
-    pending_is_data <= is_data;
-    issuing         <= 1'b1;
-    pulse_cnt       <= 2'd0;
-    start_delay(wait_us);
-end
-endtask
-
-always @(posedge clk_1mhz or posedge rst) begin
-    if (rst) begin
-        fsm_state      <= S_INIT_WAIT;
-        init_phase     <= 1'b1;
-        updating       <= 1'b0;
-        request_update <= 1'b0;
-        lcd_en         <= 1'b0;
-        lcd_rs         <= 1'b0;
-        lcd_rw         <= 1'b0; // write only
-        lcd_data       <= 8'h00;
-        issuing        <= 1'b0;
-        char_idx       <= 5'd0;
+        cnt_100hz = 20'd0;
+        clk_100hz = 1'b0;
     end else begin
-        // Handle issuing pulse
-        if (issuing) begin
-            // Drive signals
-            lcd_rs <= pending_is_data;
-            lcd_rw <= 1'b0;
-            lcd_data <= pending_byte;
-            // Simple EN pulse generation for few microseconds
-            if (pulse_cnt == 2'd0) begin
-                lcd_en   <= 1'b1;
-                pulse_cnt <= 2'd1;
-            end else if (pulse_cnt == 2'd1) begin
-                // keep EN high for PULSE_WIDTH_US via delay_active
-                if (!delay_active) begin
-                    // falling edge
-                    lcd_en <= 1'b0;
-                    pulse_cnt <= 2'd2;
-                    start_delay(pending_is_data ? CHAR_DELAY_US : CMD_DELAY_US);
+        if (cnt_100hz < 20'd4999) begin
+            cnt_100hz = cnt_100hz + 20'd1;
+        end else begin
+            cnt_100hz = 20'd0;
+            clk_100hz = ~clk_100hz;
+        end
+    end
+end
+
+
+// FSM for LCD control
+always @(posedge clk_100hz or posedge rst) begin
+    if (rst) begin
+        state = delay;
+        cnt = 20'd0;
+    end
+    else begin
+        cnt = cnt + 20'd1;
+        case (state)
+            delay:          begin if (cnt >= 70) begin state = function_set; cnt = 20'd0; end end
+            function_set:   begin if (cnt >= 30) begin state = disp_onoff; cnt = 20'd0; end end
+            disp_onoff:     begin if (cnt >= 30) begin state = entry_mode; cnt = 20'd0; end end
+            entry_mode:     begin if (cnt >= 30) begin state = idle; cnt = 20'd0; end end
+            idle:           begin if (update_req) begin state = clear_disp; cnt = 20'd0; end end
+            line1:          begin if (cnt >= 20) begin state = line2; cnt = 20'd0; end end
+            line2:          begin if (cnt >= 20) begin state = idle; cnt = 20'd0; end end
+            delay_t:        begin if (cnt >= 2) begin state = clear_disp; cnt = 20'd0; end end
+            clear_disp:     begin if (cnt >= 2) begin state = line1; cnt = 20'd0; end end
+            default:        begin state = delay; cnt = 20'd0; end
+        endcase
+    end
+end
+
+
+// Counter for state timing
+always @(posedge clk_100hz or posedge rst) begin
+    if (rst) begin
+        lcd_rs   = 1'b1;
+        lcd_rw   = 1'b1;
+        lcd_data = 8'b00000000;
+    end
+    else begin
+        case (state)
+            function_set: begin
+                lcd_rs   = 1'b0; lcd_rw   = 1'b0; lcd_data = 8'b00111100;
+            end
+            disp_onoff: begin 
+                lcd_rs   = 1'b0; lcd_rw   = 1'b0; lcd_data = 8'b00001100;
+            end
+            entry_mode: begin
+                lcd_rs   = 1'b0; lcd_rw   = 1'b0; lcd_data = 8'b00000110;
+            end
+            line1: begin
+                lcd_rw = 1'b0;
+                
+                // ready
+                if (gsm_state == 3'b001) begin
+                    case (cnt)
+                        0: begin
+                            lcd_rs   = 1'b0; lcd_data = 8'b10000000; // Set DDRAM address to 0x00
+                        end
+                        1: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01010010; // 'R'
+                        end
+                        2: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01000101; // 'E'
+                        end
+                        3: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01000001; // 'A'
+                        end
+                        4: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01000100; // 'D'
+                        end
+                        5: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01011001; // 'Y'
+                        end
+                        default : begin
+                            lcd_rs = 1'b1; lcd_data = 8'b00100000; // ' '
+                        end
+                    endcase
                 end
-            end else if (pulse_cnt == 2'd2) begin
-                if (!delay_active) begin
-                    issuing <= 1'b0; // finished
+                // playing
+                else if (gsm_state == 3'b010) begin
+                    case (cnt)
+                        0: begin
+                            lcd_rs   = 1'b0; lcd_data = 8'b10000000; // Set DDRAM address to 0x00
+                        end
+                        1: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01010000; // 'P'
+                        end
+                        2: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01001100; // 'L'
+                        end
+                        3: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01000001; // 'A'
+                        end
+                        4: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01011001; // 'Y'
+                        end
+                        5: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01001001; // 'I'
+                        end
+                        6: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01001110; // 'N'
+                        end
+                        7: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01000111; // 'G'
+                        end
+                        default : begin
+                            lcd_rs = 1'b1; lcd_data = 8'b00100000; // ' '
+                        end
+                    endcase
+                end
+                // game over
+                else if (gsm_state == 3'b011) begin
+                    case (cnt)
+                        0: begin
+                            lcd_rs   = 1'b0; lcd_data = 8'b10000000; // Set DDRAM address to 0x00
+                        end
+                        1: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01000111; // 'G'
+                        end
+                        2: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01000001; // 'A'
+                        end
+                        3: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01001101; // 'M'
+                        end
+                        4: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01000101; // 'E'
+                        end
+                        5: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b00100000; // ' '
+                        end
+                        6: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01001111; // 'O'
+                        end
+                        7: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01010110; // 'V'
+                        end
+                        8: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01000101; // 'E'
+                        end
+                        9: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01010010; // 'R'
+                        end
+                        default : begin
+                            lcd_rs = 1'b1; lcd_data = 8'b00100000; // ' '
+                        end
+                    endcase
+                end
+                // stage clear
+                else if (gsm_state == 3'b100) begin
+                    case (cnt)
+                        0: begin
+                            lcd_rs   = 1'b0; lcd_data = 8'b10000000; // Set DDRAM address to 0x00
+                        end
+                        1: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01010011; // 'S'
+                        end
+                        2: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01010100; // 'T'
+                        end
+                        3: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01000001; // 'A'
+                        end
+                        4: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01000111; // 'G'
+                        end
+                        5: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01000101; // 'E'
+                        end
+                        6: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b00100000; // ' '
+                        end
+                        7: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01000011; // 'C'
+                        end
+                        8: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01001100; // 'L'
+                        end
+                        9: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01000101; // 'E'
+                        end
+                        10: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01000001; // 'A'
+                        end
+                        default : begin
+                            lcd_rs = 1'b1; lcd_data = 8'b00100000; // ' '
+                        end
+                    endcase
+                end
+                // game clear
+                else if (gsm_state == 3'b101) begin
+                    case (cnt)
+                        0: begin
+                            lcd_rs   = 1'b0; lcd_data = 8'b10000000; // Set DDRAM address to 0x00
+                        end
+                        1: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01000111; // 'G'
+                        end
+                        2: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01000001; // 'A'
+                        end
+                        3: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01001101; // 'M'
+                        end
+                        4: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01000101; // 'E'
+                        end
+                        5: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b00100000; // ' '
+                        end
+                        6: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01000011; // 'C'
+                        end
+                        7: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01001100; // 'L'
+                        end
+                        8: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01000101; // 'E'
+                        end
+                        9: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01000001; // 'A'
+                        end
+                        10: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01010010; // 'R'
+                        end
+                        default : begin
+                            lcd_rs = 1'b1; lcd_data = 8'b00100000; // ' '
+                        end
+                    endcase
+                end
+                // default blank
+                else begin
+                    case (cnt)
+                        0: begin
+                            lcd_rs   = 1'b0; lcd_data = 8'b10000000; // Set DDRAM address to 0x00
+                        end
+                        default : begin
+                            lcd_rs = 1'b1; lcd_data = 8'b00100000; // ' '
+                        end
+                    endcase
+                end 
+            end
+            line2: begin
+                // ready or playing
+                if (gsm_state == 3'b001 || gsm_state == 3'b010) begin
+                    case(cnt)
+                        0: begin
+                            lcd_rs   = 1'b0; lcd_data = 8'b11000000; // Set DDRAM address to 0x40
+                        end
+                        1: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01010011; // 'S'
+                        end
+                        2: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01010100; // 'T'
+                        end
+                        3: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01000001; // 'A'
+                        end
+                        4: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01000111; // 'G'
+                        end
+                        5: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b01000101; // 'E'
+                        end
+                        6: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b00111010; // ':'
+                        end
+                        7: begin
+                            lcd_rs   = 1'b1; lcd_data = 8'b00100000; // ' '
+                        end
+                        8: begin
+                            lcd_rs   = 1'b1; lcd_data = {6'b001100, gsm_stage}; // stage number
+                        end
+                        default : begin
+                            lcd_rs = 1'b1; lcd_data = 8'b00100000; // ' '
+                        end
+                    endcase
+                end
+                else if (gsm_state == 3'b011 || gsm_state == 3'b101) begin
+                    case (cnt)
+                        0: begin
+                            lcd_rs   = 1'b0;
+                            lcd_data = 8'b11000000; // Set DDRAM address to 0x40
+                        end
+                        1: begin
+                            lcd_rs   = 1'b1;
+                            lcd_data = 8'b01000010; // 'B'
+                        end
+                        2: begin
+                            lcd_rs   = 1'b1;
+                            lcd_data = 8'b01000101; // 'E'
+                        end
+                        3: begin
+                            lcd_rs   = 1'b1;
+                            lcd_data = 8'b01010011; // 'S'
+                        end
+                        4: begin
+                            lcd_rs   = 1'b1;
+                            lcd_data = 8'b01010100; // 'T'
+                        end
+                        5: begin
+                            lcd_rs   = 1'b1;
+                            lcd_data = 8'b00111010; // ':'
+                        end
+                        6: begin
+                            lcd_rs   = 1'b1;
+                            lcd_data = 8'b00100000; // ' '
+                        end
+                        8: begin
+                            lcd_rs   = 1'b1;
+                            if (hs_hundreds != 4'd0) begin
+                                lcd_data = {4'b0011, hs_hundreds}; // high score hundreds
+                            end else begin
+                                lcd_data = 8'b00100000; // ' '
+                            end
+                        end
+                        9: begin
+                            lcd_rs   = 1'b1;
+                            if (hs_hundreds != 4'd0 || hs_tens != 4'd0) begin
+                                lcd_data = {4'b0011, hs_tens};     // high score tens
+                            end else begin
+                                lcd_data = 8'b00100000; // ' '
+                            end
+                        end
+                        10: begin
+                            lcd_rs   = 1'b1;
+                            lcd_data = {4'b0011, hs_ones};     // high score ones
+                        end
+                        11: begin
+                            lcd_rs   = 1'b1;
+                            if (gsm_high_score_updated) begin
+                                lcd_data = 8'b00101010; // '*' if high score updated
+                            end else begin
+                                lcd_data = 8'b00100000; // ' '
+                            end
+                        end
+                        default : begin
+                            lcd_rs = 1'b1;
+                            lcd_data = 8'b00100000; // ' '
+                        end
+                    endcase
+                end
+
+                // default blank
+                else begin
+                    case (cnt)
+                        0: begin
+                            lcd_rs   = 1'b0;
+                            lcd_data = 8'b11000000; // Set DDRAM address to 0x40
+                        end
+                        default : begin
+                            lcd_rs = 1'b1;
+                            lcd_data = 8'b00100000; // ' '
+                        end
+                    endcase
                 end
             end
-        end else begin
-            lcd_en <= 1'b0;
-        end
-
-        if (!issuing) begin
-            case (fsm_state)
-                S_INIT_WAIT: begin
-                    if (!delay_active) begin
-                        start_delay(INIT_DELAY_US);
-                        fsm_state <= S_INIT_FUNC;
-                    end
-                end
-                S_INIT_FUNC: begin
-                    if (!delay_active) begin
-                        issue(8'h38, 1'b0, CMD_DELAY_US); // 8-bit, 2 line
-                        fsm_state <= S_INIT_DISP;
-                    end
-                end
-                S_INIT_DISP: begin
-                    if (!delay_active) begin
-                        issue(8'h0C, 1'b0, CMD_DELAY_US); // display on, cursor off
-                        fsm_state <= S_INIT_CLR;
-                    end
-                end
-                S_INIT_CLR: begin
-                    if (!delay_active) begin
-                        issue(8'h01, 1'b0, CMD_DELAY_US); // clear
-                        fsm_state <= S_INIT_ENTRY;
-                    end
-                end
-                S_INIT_ENTRY: begin
-                    if (!delay_active) begin
-                        issue(8'h06, 1'b0, CMD_DELAY_US); // entry mode
-                        init_phase <= 1'b0;
-                        fsm_state  <= S_IDLE;
-                    end
-                end
-                S_IDLE: begin
-                    updating <= 1'b0;
-                    char_idx <= 5'd0;
-                    if (request_update) begin
-                        request_update <= 1'b0;
-                        updating <= 1'b1;
-                        fsm_state <= S_SET_LINE1;
-                    end
-                end
-                S_SET_LINE1: begin
-                    issue(8'h80, 1'b0, CMD_DELAY_US); // line1 address
-                    fsm_state <= S_WRITE_L1;
-                    char_idx <= 5'd0;
-                end
-                S_WRITE_L1: begin
-                    if (char_idx < 16) begin
-                        issue(line1[char_idx], 1'b1, CHAR_DELAY_US);
-                        char_idx <= char_idx + 5'd1;
-                    end else begin
-                        fsm_state <= S_SET_LINE2;
-                        char_idx <= 5'd0;
-                    end
-                end
-                S_SET_LINE2: begin
-                    issue(8'hC0, 1'b0, CMD_DELAY_US); // line2 address
-                    fsm_state <= S_WRITE_L2;
-                end
-                S_WRITE_L2: begin
-                    if (char_idx < 16) begin
-                        issue(line2[char_idx], 1'b1, CHAR_DELAY_US);
-                        char_idx <= char_idx + 5'd1;
-                    end else begin
-                        fsm_state <= S_IDLE;
-                    end
-                end
-                default: fsm_state <= S_IDLE;
-            endcase
-        end
+            delay_t: begin
+                lcd_rs   = 1'b0;
+                lcd_rw   = 1'b0;
+                lcd_data = 8'b00000010;             
+            end
+            clear_disp: begin
+                lcd_rs   = 1'b0;
+                lcd_rw   = 1'b0;
+                lcd_data = 8'b00000001; // Clear display
+            end
+            default: begin
+                lcd_rs   = 1'b1;
+                lcd_rw   = 1'b1;
+                lcd_data = 8'b00000000;
+            end
+        endcase
     end
 end
+
+assign lcd_en = (state == idle) ? 1'b0 : clk_100hz;
 
 endmodule

@@ -1,7 +1,7 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-| Date         : Mon Nov 24 20:37:34 2025
+| Date         : Sat Nov 29 15:54:42 2025
 | Host         : Swallow-Laptop running 64-bit major release  (build 9200)
 | Command      : report_control_sets -verbose -file gm_control_sets_placed.rpt
 | Design       : gm
@@ -23,11 +23,11 @@ Table of Contents
 +----------------------------------------------------------+-------+
 |                          Status                          | Count |
 +----------------------------------------------------------+-------+
-| Total control sets                                       |    20 |
-|    Minimum number of control sets                        |    20 |
+| Total control sets                                       |    14 |
+|    Minimum number of control sets                        |    14 |
 |    Addition due to synthesis replication                 |     0 |
 |    Addition due to physical synthesis replication        |     0 |
-| Unused register locations in slices containing registers |    78 |
+| Unused register locations in slices containing registers |    66 |
 +----------------------------------------------------------+-------+
 * Control sets can be merged at opt_design using control_set_merge or merge_equivalent_drivers
 ** Run report_qor_suggestions for automated merging and remapping suggestions
@@ -39,15 +39,15 @@ Table of Contents
 +--------------------+-------+
 |       Fanout       | Count |
 +--------------------+-------+
-| Total control sets |    20 |
+| Total control sets |    14 |
 | >= 0 to < 4        |     2 |
-| >= 4 to < 6        |     4 |
-| >= 6 to < 8        |     4 |
-| >= 8 to < 10       |     3 |
-| >= 10 to < 12      |     3 |
-| >= 12 to < 14      |     0 |
+| >= 4 to < 6        |     1 |
+| >= 6 to < 8        |     2 |
+| >= 8 to < 10       |     1 |
+| >= 10 to < 12      |     5 |
+| >= 12 to < 14      |     1 |
 | >= 14 to < 16      |     0 |
-| >= 16              |     4 |
+| >= 16              |     2 |
 +--------------------+-------+
 * Control sets can be remapped at either synth_design or opt_design
 
@@ -58,41 +58,35 @@ Table of Contents
 +--------------+-----------------------+------------------------+-----------------+--------------+
 | Clock Enable | Synchronous Set/Reset | Asynchronous Set/Reset | Total Registers | Total Slices |
 +--------------+-----------------------+------------------------+-----------------+--------------+
-| No           | No                    | No                     |              16 |           10 |
-| No           | No                    | Yes                    |             124 |           47 |
-| No           | Yes                   | No                     |              10 |            3 |
-| Yes          | No                    | No                     |              55 |           20 |
-| Yes          | No                    | Yes                    |              53 |           28 |
-| Yes          | Yes                   | No                     |              24 |            8 |
+| No           | No                    | No                     |               2 |            2 |
+| No           | No                    | Yes                    |             180 |           81 |
+| No           | Yes                   | No                     |              22 |            8 |
+| Yes          | No                    | No                     |               0 |            0 |
+| Yes          | No                    | Yes                    |              30 |           14 |
+| Yes          | Yes                   | No                     |              36 |           14 |
 +--------------+-----------------------+------------------------+-----------------+--------------+
 
 
 4. Detailed Control Set Information
 -----------------------------------
 
-+---------------------+----------------------------------------------+----------------------------------+------------------+----------------+--------------+
-|     Clock Signal    |                 Enable Signal                |         Set/Reset Signal         | Slice Load Count | Bel Load Count | Bels / Slice |
-+---------------------+----------------------------------------------+----------------------------------+------------------+----------------+--------------+
-|  clk_1mhz_IBUF_BUFG | lcd_inst/lcd_en_i_1_n_0                      | rst_IBUF                         |                1 |              1 |         1.00 |
-|  clk_1mhz_IBUF_BUFG | gsm_inst/score[9]_i_2_n_0                    |                                  |                1 |              1 |         1.00 |
-|  clk_1mhz_IBUF_BUFG | lcd_inst/FSM_sequential_fsm_state[3]_i_1_n_0 | rst_IBUF                         |                2 |              4 |         2.00 |
-|  clk_1mhz_IBUF_BUFG | gsm_inst/E[0]                                | rst_IBUF                         |                3 |              4 |         1.33 |
-|  clk_1mhz_IBUF_BUFG | lcd_inst/prev_state0                         | rst_IBUF                         |                2 |              5 |         2.50 |
-|  clk_1mhz_IBUF_BUFG | lcd_inst/char_idx[4]_i_1_n_0                 | rst_IBUF                         |                3 |              5 |         1.67 |
-|  clk_1mhz_IBUF_BUFG | gsm_inst/timer[5]_i_1_n_0                    |                                  |                3 |              6 |         2.00 |
-|  clk_1mhz_IBUF_BUFG | igm_inst/mole_state                          | rst_IBUF                         |                2 |              6 |         3.00 |
-|  clk_1mhz_IBUF_BUFG | gsm_inst/done_cnt[6]_i_2_n_0                 | gsm_inst/done11_out              |                3 |              7 |         2.33 |
-|  clk_1mhz_IBUF_BUFG | gsm_inst/score[9]_i_2_n_0                    | gsm_inst/score[9]_i_1_n_0        |                2 |              7 |         3.50 |
-|  clk_1mhz_IBUF_BUFG | lcd_inst/pending_byte[7]_i_1_n_0             |                                  |                5 |              9 |         1.80 |
-|  clk_1mhz_IBUF_BUFG | lcd_inst/issuing_reg_n_0                     | rst_IBUF                         |                5 |              9 |         1.80 |
-|  clk_1mhz_IBUF_BUFG | igm_inst/mole_interval[8]_i_1_n_0            | rst_IBUF                         |                6 |              9 |         1.50 |
-|  clk_1mhz_IBUF_BUFG |                                              | gsm_inst/clk_cnt[9]_i_1__1_n_0   |                3 |             10 |         3.33 |
-|  clk_1mhz_IBUF_BUFG | gsm_inst/p_0_in_0                            | gsm_inst/mille_cnt[9]_i_1__0_n_0 |                3 |             10 |         3.33 |
-|  clk_1mhz_IBUF_BUFG | igm_inst/mille_cnt[9]_i_1_n_0                | rst_IBUF                         |                4 |             10 |         2.50 |
-|  clk_1mhz_IBUF_BUFG |                                              |                                  |               10 |             16 |         1.60 |
-|  clk_1mhz_IBUF_BUFG | gsm_inst/sec_cnt[0]_i_1_n_0                  |                                  |                4 |             16 |         4.00 |
-|  clk_1mhz_IBUF_BUFG | lcd_inst/line1[1][0]_i_1_n_0                 |                                  |                7 |             23 |         3.29 |
-|  clk_1mhz_IBUF_BUFG |                                              | rst_IBUF                         |               47 |            124 |         2.64 |
-+---------------------+----------------------------------------------+----------------------------------+------------------+----------------+--------------+
++---------------------+-----------------------------------+-------------------------------+------------------+----------------+--------------+
+|     Clock Signal    |           Enable Signal           |        Set/Reset Signal       | Slice Load Count | Bel Load Count | Bels / Slice |
++---------------------+-----------------------------------+-------------------------------+------------------+----------------+--------------+
+|  clk_100hz          | lcd_inst/lcd_rw_i_1_n_0           | rst_IBUF                      |                1 |              1 |         1.00 |
+|  clk_1mhz_IBUF_BUFG |                                   |                               |                2 |              2 |         1.00 |
+|  clk_1mhz_IBUF_BUFG | gsm_inst/E[0]                     | rst_IBUF                      |                2 |              4 |         2.00 |
+|  clk_1mhz_IBUF_BUFG | igm_inst/mole_state               | rst_IBUF                      |                3 |              6 |         2.00 |
+|  clk_1mhz_IBUF_BUFG | gsm_inst/timer[5]_i_1_n_0         | gsm_inst/sync_trig[1]_i_1_n_0 |                3 |              6 |         2.00 |
+|  clk_1mhz_IBUF_BUFG | igm_inst/mole_interval[8]_i_1_n_0 | rst_IBUF                      |                5 |              9 |         1.80 |
+|  clk_1mhz_IBUF_BUFG |                                   | gsm_inst/clk_cnt[9]_i_1_n_0   |                4 |             10 |         2.50 |
+|  clk_1mhz_IBUF_BUFG | igm_inst/mille_cnt[9]_i_1__0_n_0  | rst_IBUF                      |                3 |             10 |         3.33 |
+|  clk_1mhz_IBUF_BUFG | gsm_inst/mille_cnt[9]_i_2_n_0     | gsm_inst/mille_cnt[9]_i_1_n_0 |                3 |             10 |         3.33 |
+|  clk_1mhz_IBUF_BUFG | gsm_inst/high_score[9]_i_1_n_0    | gsm_inst/sync_trig[1]_i_1_n_0 |                4 |             10 |         2.50 |
+|  clk_1mhz_IBUF_BUFG | gsm_inst/score[9]_i_1_n_0         | gsm_inst/sync_trig[1]_i_1_n_0 |                4 |             10 |         2.50 |
+|  clk_1mhz_IBUF_BUFG |                                   | gsm_inst/sync_trig[1]_i_1_n_0 |                4 |             12 |         3.00 |
+|  clk_100hz          |                                   | rst_IBUF                      |               17 |             32 |         1.88 |
+|  clk_1mhz_IBUF_BUFG |                                   | rst_IBUF                      |               64 |            148 |         2.31 |
++---------------------+-----------------------------------+-------------------------------+------------------+----------------+--------------+
 
 

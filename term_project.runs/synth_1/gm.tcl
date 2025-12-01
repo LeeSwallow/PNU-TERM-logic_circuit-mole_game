@@ -71,7 +71,7 @@ proc create_report { reportName command } {
 }
 OPTRACE "synth_1" START { ROLLUP_AUTO }
 set_param chipscope.maxJobs 4
-set_param synth.incrementalSynthesisCache C:/Users/lmh21/AppData/Roaming/Xilinx/Vivado/.Xil/Vivado-23236-Swallow-Laptop/incrSyn
+set_param synth.incrementalSynthesisCache C:/Users/lmh21/AppData/Roaming/Xilinx/Vivado/.Xil/Vivado-23420-Swallow-Laptop/incrSyn
 set_param xicom.use_bs_reader 1
 set_msg_config -id {Synth 8-256} -limit 10000
 set_msg_config -id {Synth 8-638} -limit 10000
@@ -91,6 +91,7 @@ OPTRACE "Creating in-memory project" END { }
 OPTRACE "Adding files" START { }
 read_verilog -library xil_defaultlib {
   D:/Univ/logic_circuit/term_project/module/unit/7seg_arr_output.v
+  D:/Univ/logic_circuit/term_project/module/unit/7seg_output.v
   D:/Univ/logic_circuit/term_project/module/manager/game_state_manager.v
   D:/Univ/logic_circuit/term_project/module/manager/in_game_manager.v
   D:/Univ/logic_circuit/term_project/module/unit/key_button_input.v
