@@ -1,11 +1,12 @@
 module rand_gen(
     input wire clk_1mhz, input wire rst,
+    input wire[8:0] seed,
     output reg [8:0] rand_num
 );
 reg [15:0] lfsr;
 always @(posedge clk_1mhz or posedge rst) begin
     if (rst) begin
-        lfsr <= 16'hACE1; // non-zero seed
+        lfsr <= {7'd0, seed};
         rand_num <= 9'd0;
     end else begin
         lfsr <= {lfsr[14:0], lfsr[15] ^ lfsr[13] ^ lfsr[12] ^ lfsr[10]};

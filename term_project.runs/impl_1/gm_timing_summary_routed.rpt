@@ -1,7 +1,7 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-| Date         : Mon Dec  1 18:15:31 2025
+| Date         : Mon Dec  1 19:56:44 2025
 | Host         : Swallow-Laptop running 64-bit major release  (build 9200)
 | Command      : report_timing_summary -max_paths 10 -file gm_timing_summary_routed.rpt -pb gm_timing_summary_routed.pb -rpx gm_timing_summary_routed.rpx -warn_on_violation
 | Design       : gm
@@ -39,10 +39,10 @@ check_timing report
 
 Table of Contents
 -----------------
-1. checking no_clock (270)
+1. checking no_clock (335)
 2. checking constant_clock (0)
 3. checking pulse_width_clock (0)
-4. checking unconstrained_internal_endpoints (603)
+4. checking unconstrained_internal_endpoints (759)
 5. checking no_input_delay (12)
 6. checking no_output_delay (51)
 7. checking multiple_clock (0)
@@ -52,9 +52,9 @@ Table of Contents
 11. checking partial_output_delay (0)
 12. checking latch_loops (0)
 
-1. checking no_clock (270)
+1. checking no_clock (335)
 --------------------------
- There are 237 register/latch pins with no clock driven by root clock pin: clk_1mhz (HIGH)
+ There are 302 register/latch pins with no clock driven by root clock pin: clk_1mhz (HIGH)
 
  There are 33 register/latch pins with no clock driven by root clock pin: lcd_inst/clk_100hz_reg/Q (HIGH)
 
@@ -69,9 +69,9 @@ Table of Contents
  There are 0 register/latch pins which need pulse_width check
 
 
-4. checking unconstrained_internal_endpoints (603)
+4. checking unconstrained_internal_endpoints (759)
 --------------------------------------------------
- There are 603 pins that are not constrained for maximum delay. (HIGH)
+ There are 759 pins that are not constrained for maximum delay. (HIGH)
 
  There are 0 pins that are not constrained for maximum delay due to constant clock.
 

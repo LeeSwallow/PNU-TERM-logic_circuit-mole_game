@@ -2,6 +2,7 @@ module igm(
     input wire clk_1mhz,
     input wire rst,
     input wire enable,
+    input wire [8:0] seed,
     input wire [1:0] gsm_stage,
     output reg [3:0] mole_pos // which mole to show
 );
@@ -30,6 +31,7 @@ reg [8:0] mole_interval; // mole interval timer
 rand_gen rg_inst(
     .clk_1mhz(clk_1mhz),
     .rst(rst),
+    .seed(seed),
     .rand_num(rand_val)
 );
 

@@ -54,15 +54,26 @@ gsm gsm_inst(
 instantiate in-game manager
 ===============================================================================
 */
-wire [3:0] igm_mole_pos;
+wire [3:0] igm_mole_pos1;
+wire [3:0] igm_mole_pos2;
 wire igm_enable;
 assign igm_enable = ((gsm_state == 3'b010) && gsm_timer_running); // enable when playing and timer running
-igm igm_inst(
+igm igm_inst1(
     .clk_1mhz(clk_1mhz),
     .rst(rst),
     .enable(igm_enable), // enable when playing
+    .seed(9'd123), // fixed seed for first mole
     .gsm_stage(gsm_stage),
-    .mole_pos(igm_mole_pos)
+    .mole_pos(igm_mole_pos1)
+);
+
+igm igm_inst2(
+    .clk_1mhz(clk_1mhz),
+    .rst(rst),
+    .enable(igm_enable), // enable when playing
+    .seed(9'd456), // fixed seed for second mole
+    .gsm_stage(gsm_stage),
+    .mole_pos(igm_mole_pos2)
 );
 
 /*
@@ -103,7 +114,8 @@ instantiate LED output module
 ===============================================================================
 */
 leds_output leds_inst(
-    .mole_pos(igm_mole_pos),
+    .mole_pos1(igm_mole_pos1),
+    .mole_pos2(igm_mole_pos2),
     .leds(led_out)
 );
 /*
@@ -251,7 +263,7 @@ always @(posedge clk_1mhz or posedge rst) begin
             if (gsm_lives != 2'd0) begin
                 if (btn_sync == 2'b01) begin // button pressed(1~8)
                     if ((btn_value >= 4'd1) && (btn_value <= 4'd8)) begin
-                        if (igm_mole_pos == btn_value) begin // hit
+                        if ((igm_mole_pos1 == btn_value) || (igm_mole_pos2 == btn_value)) begin // hit
                             gsm_flag <= 4'b0001; // increment score
                             gsm_trig <= 1'b1;
                             snd_mode <= 3'b011; // hit sound
