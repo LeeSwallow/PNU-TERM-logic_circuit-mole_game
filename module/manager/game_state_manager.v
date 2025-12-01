@@ -56,6 +56,7 @@ always @(posedge clk_1mhz) begin
                     state <= 3'b001; 
                     timer <= READY_DURATION;
                     timer_running <= 1'b0; 
+                    lives <= 2'd3; // reset lives
                     high_score_updated <= 1'b0;
                 end
                 // to playing(from ready)                

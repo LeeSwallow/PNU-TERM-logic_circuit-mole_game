@@ -1,7 +1,7 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-| Date         : Sat Nov 29 15:54:42 2025
+| Date         : Mon Dec  1 18:15:07 2025
 | Host         : Swallow-Laptop running 64-bit major release  (build 9200)
 | Command      : report_control_sets -verbose -file gm_control_sets_placed.rpt
 | Design       : gm
@@ -59,11 +59,11 @@ Table of Contents
 | Clock Enable | Synchronous Set/Reset | Asynchronous Set/Reset | Total Registers | Total Slices |
 +--------------+-----------------------+------------------------+-----------------+--------------+
 | No           | No                    | No                     |               2 |            2 |
-| No           | No                    | Yes                    |             180 |           81 |
-| No           | Yes                   | No                     |              22 |            8 |
+| No           | No                    | Yes                    |             180 |           74 |
+| No           | Yes                   | No                     |              22 |            9 |
 | Yes          | No                    | No                     |               0 |            0 |
-| Yes          | No                    | Yes                    |              30 |           14 |
-| Yes          | Yes                   | No                     |              36 |           14 |
+| Yes          | No                    | Yes                    |              30 |           13 |
+| Yes          | Yes                   | No                     |              36 |           13 |
 +--------------+-----------------------+------------------------+-----------------+--------------+
 
 
@@ -76,17 +76,17 @@ Table of Contents
 |  clk_100hz          | lcd_inst/lcd_rw_i_1_n_0           | rst_IBUF                      |                1 |              1 |         1.00 |
 |  clk_1mhz_IBUF_BUFG |                                   |                               |                2 |              2 |         1.00 |
 |  clk_1mhz_IBUF_BUFG | gsm_inst/E[0]                     | rst_IBUF                      |                2 |              4 |         2.00 |
-|  clk_1mhz_IBUF_BUFG | igm_inst/mole_state               | rst_IBUF                      |                3 |              6 |         2.00 |
-|  clk_1mhz_IBUF_BUFG | gsm_inst/timer[5]_i_1_n_0         | gsm_inst/sync_trig[1]_i_1_n_0 |                3 |              6 |         2.00 |
-|  clk_1mhz_IBUF_BUFG | igm_inst/mole_interval[8]_i_1_n_0 | rst_IBUF                      |                5 |              9 |         1.80 |
-|  clk_1mhz_IBUF_BUFG |                                   | gsm_inst/clk_cnt[9]_i_1_n_0   |                4 |             10 |         2.50 |
-|  clk_1mhz_IBUF_BUFG | igm_inst/mille_cnt[9]_i_1__0_n_0  | rst_IBUF                      |                3 |             10 |         3.33 |
+|  clk_1mhz_IBUF_BUFG | igm_inst/mole_state               | rst_IBUF                      |                2 |              6 |         3.00 |
+|  clk_1mhz_IBUF_BUFG | gsm_inst/timer[5]_i_1_n_0         | gsm_inst/sync_trig[1]_i_1_n_0 |                2 |              6 |         3.00 |
+|  clk_1mhz_IBUF_BUFG | igm_inst/mole_interval[8]_i_1_n_0 | rst_IBUF                      |                4 |              9 |         2.25 |
+|  clk_1mhz_IBUF_BUFG |                                   | gsm_inst/clk_cnt[9]_i_1_n_0   |                3 |             10 |         3.33 |
+|  clk_1mhz_IBUF_BUFG | igm_inst/mille_cnt[9]_i_1__0_n_0  | rst_IBUF                      |                4 |             10 |         2.50 |
 |  clk_1mhz_IBUF_BUFG | gsm_inst/mille_cnt[9]_i_2_n_0     | gsm_inst/mille_cnt[9]_i_1_n_0 |                3 |             10 |         3.33 |
-|  clk_1mhz_IBUF_BUFG | gsm_inst/high_score[9]_i_1_n_0    | gsm_inst/sync_trig[1]_i_1_n_0 |                4 |             10 |         2.50 |
-|  clk_1mhz_IBUF_BUFG | gsm_inst/score[9]_i_1_n_0         | gsm_inst/sync_trig[1]_i_1_n_0 |                4 |             10 |         2.50 |
-|  clk_1mhz_IBUF_BUFG |                                   | gsm_inst/sync_trig[1]_i_1_n_0 |                4 |             12 |         3.00 |
+|  clk_1mhz_IBUF_BUFG | gsm_inst/high_score[9]_i_1_n_0    | gsm_inst/sync_trig[1]_i_1_n_0 |                5 |             10 |         2.00 |
+|  clk_1mhz_IBUF_BUFG | gsm_inst/score[9]_i_1_n_0         | gsm_inst/sync_trig[1]_i_1_n_0 |                3 |             10 |         3.33 |
+|  clk_1mhz_IBUF_BUFG |                                   | gsm_inst/sync_trig[1]_i_1_n_0 |                6 |             12 |         2.00 |
 |  clk_100hz          |                                   | rst_IBUF                      |               17 |             32 |         1.88 |
-|  clk_1mhz_IBUF_BUFG |                                   | rst_IBUF                      |               64 |            148 |         2.31 |
+|  clk_1mhz_IBUF_BUFG |                                   | rst_IBUF                      |               57 |            148 |         2.60 |
 +---------------------+-----------------------------------+-------------------------------+------------------+----------------+--------------+
 
 
